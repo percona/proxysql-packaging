@@ -1,0 +1,3 @@
+proxysql /usr/bin/
+etc/proxysql.cnf /etc/
+etc/init.d/proxysql /etc/init.d/

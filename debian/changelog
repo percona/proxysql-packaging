@@ -1,0 +1,5 @@
+proxysql (1.2.0) unstable; urgency=low
+
+  * Initial Release.
+
+ -- EvgeniyPatlan <evgeniy.patlan@percona.com>  thu, 14 Jul 2016 07:41:56 -0400
