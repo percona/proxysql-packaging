@@ -23,6 +23,8 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 %setup -q
 
 %build
+sed -i -e 's/c++11/c++0x/' lib/Makefile
+sed -i -e 's/c++11/c++0x/' src/Makefile
 make clean
 make -j 4 build_deps
 make -j 4
