@@ -37,6 +37,10 @@ install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0600 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0755 etc/init.d/proxysql %{buildroot}/%{_sysconfdir}/init.d
 install -d %{buildroot}/var/lib/proxysql
+install -d %{buildroot}/opt
+install -d %{buildroot}/opt/proxysql
+cp %{_builddir}/%{name}-%{version}/tools/proxysql_galera_checker.sh %{buildroot}/opt/proxysql/proxysql_galera_checker.sh
+
 
 %clean
 rm -rf %{buildroot}
@@ -54,6 +58,8 @@ chkconfig --del %{name}
 %config(noreplace) %{_sysconfdir}/%{name}.cnf
 %{_bindir}/*
 %{_sysconfdir}/init.d/%{name}
+/opt/proxysql/proxysql_galera_checker.sh
+
 
 %changelog
 * Fri Jul 15 2016  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.2.0-1.0.1
