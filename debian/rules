@@ -55,9 +55,8 @@ override_dh_auto_install:
 	mkdir -p $(TMP)/etc
 	mkdir -p $(TMP)/etc/init.d
 	mkdir -p $(TMP)/var/lib/proxysql
-	mkdir -p $(TMP)/opt/proxysql
 	cp src/proxysql $(TMP)/
 	cp etc/proxysql.cnf $(TMP)/etc/
 	cp etc/init.d/proxysql $(TMP)/etc/init.d
-	cp tools/proxysql_galera_checker.sh $(TMP)/opt/proxysql/
+	cp tools/proxysql_galera_checker.sh $(TMP)/proxysql_galera_checker
 

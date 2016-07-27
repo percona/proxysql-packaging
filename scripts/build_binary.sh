@@ -92,15 +92,14 @@ mkdir "$INSTALLDIR"
         mkdir -p "$INSTALLDIR"
         make -j 4 build_deps
         make -j 4
-        mkdir -p $INSTALLDIR/usr/local/bin
+        mkdir -p $INSTALLDIR/usr/bin
         mkdir -p $INSTALLDIR/etc
         mkdir -p $INSTALLDIR/etc/init.d
-        mkdir -p $INSTALLDIR/opt/proxysql
-        install -m 0755 src/proxysql $INSTALLDIR/usr/local/bin
+        install -m 0755 src/proxysql $INSTALLDIR/usr/bin
         install -m 0600 etc/proxysql.cnf $INSTALLDIR/etc
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
-        cp tools/proxysql_galera_checker.sh $INSTALLDIR/opt/proxysql/
+        cp tools/proxysql_galera_checker.sh $INSTALLDIR/usr/bin/proxysql_galera_checker
     )
     exit_value=$?
 

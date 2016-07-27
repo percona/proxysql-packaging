@@ -37,9 +37,7 @@ install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0600 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0755 etc/init.d/proxysql %{buildroot}/%{_sysconfdir}/init.d
 install -d %{buildroot}/var/lib/proxysql
-install -d %{buildroot}/opt
-install -d %{buildroot}/opt/proxysql
-cp %{_builddir}/%{name}-%{version}/tools/proxysql_galera_checker.sh %{buildroot}/opt/proxysql/proxysql_galera_checker.sh
+install -m 0755  %{_builddir}/%{name}-%{version}/tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysql_galera_checker
 
 
 %clean
@@ -56,9 +54,9 @@ chkconfig --del %{name}
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/%{name}.cnf
-%{_bindir}/*
+%{_bindir}/proxysql
+%{_bindir}/proxysql_galera_checker
 %{_sysconfdir}/init.d/%{name}
-/opt/proxysql/proxysql_galera_checker.sh
 
 
 %changelog
