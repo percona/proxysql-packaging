@@ -1,4 +1,4 @@
-proxysql (1.2.0) unstable; urgency=low
+proxysql (@@VERSION@@) unstable; urgency=low
 
   * Initial Release.
 

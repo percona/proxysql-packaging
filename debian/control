@@ -1,6 +1,6 @@
 Source: proxysql
 Build-Depends: debhelper (>= 7.0.50~)
-Version: 1.2.0
+Version: @@VERSION@@
 Maintainer: Rene Cannao <rene.cannao@gmail.com>
 Section: misc
 Priority: optional
