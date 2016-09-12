@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ -f /usr/bin/proxysql ]; then
+    chmod 0755 /usr/bin/proxysql
+    chown proxysql:proxysql /usr/bin/proxysql
+fi
+
+if [ -f /etc/proxysql.cnf ]; then
+    chmod 0640 /etc/proxysql.cnf
+fi
+
+if [ -f /etc/init.d/proxysql ]; then
+    chmod 0755 /etc/init.d/proxysql
+    chown proxysql:proxysql /etc/init.d/proxysql
+fi
+
+if [ -f /usr/bin/proxysql_galera_checker ]; then
+    chmod 0750 /usr/bin/proxysql_galera_checker
+    chown root:proxysql /usr/bin/proxysql_galera_checker
+fi
+
+if [ -d /var/lib/proxysql ]; then
+    chown -R proxysql:proxysql /var/lib/proxysql
+fi
+
+if [ -d /var/run/proxysql ]; then
+    chown -R proxysql:proxysql /var/run/proxysql
+fi

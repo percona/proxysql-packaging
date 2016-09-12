@@ -53,6 +53,8 @@ override_dh_auto_build:
 override_dh_auto_install:
 	@echo "RULES.$@"
 	mkdir -p $(TMP)/etc
+	mkdir -p $(TMP)/var/lib/proxysql
+	mkdir -p $(TMP)/var/run/proxysql
 	mkdir -p $(TMP)/etc/init.d
 	mkdir -p $(TMP)/var/lib/proxysql
 	cp src/proxysql $(TMP)/
