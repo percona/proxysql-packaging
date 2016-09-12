@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if ! getent group proxysql >/dev/null;
+then
+    addgroup --system proxysql >/dev/null
+fi
+
+if ! getent passwd proxysql >/dev/null;
+then
+    adduser --ingroup proxysql --system --disabled-login --no-create-home --home /var/lib/proxysql --shell /bin/false --gecos "ProxySQL" proxysql >/dev/null
+fi
