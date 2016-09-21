@@ -26,3 +26,8 @@ fi
 if [ -d /var/run/proxysql ]; then
     chown -R proxysql:proxysql /var/run/proxysql
 fi
+
+if [ -f /usr/bin/proxysql-admin ]; then
+    chmod 0755 /usr/bin/proxysql-admin
+    chown proxysql:proxysql /usr/bin/proxysql-admin
+fi
