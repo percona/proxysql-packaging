@@ -61,4 +61,5 @@ override_dh_auto_install:
 	cp etc/proxysql.cnf $(TMP)/etc/
 	cp etc/init.d/proxysql $(TMP)/etc/init.d
 	cp tools/proxysql_galera_checker.sh $(TMP)/proxysql_galera_checker
+	cp tools/proxysql-admin $(TMP)/proxysql-admin
 
