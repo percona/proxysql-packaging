@@ -99,9 +99,11 @@ mkdir "$INSTALLDIR"
         install -m 0640 etc/proxysql.cnf $INSTALLDIR/etc
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
-        install -m 0750 tools/proxysql_galera_checker.sh $INSTALLDIR/usr/bin/proxysql_galera_checker
-        git clone https://github.com/Percona-QA/proxysql-admin-tool.git
-        install -m 0750 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
+        git clone https://github.com/percona/proxysql-admin-tool.git
+        install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
+        install -m 0775 proxysql-admin-tool/proxysql_node_monitor $INSTALLDIR/usr/bin/proxysql-admin
+        install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
+        install -m 0775 proxysql-admin-tool/proxysql_galera_checker $INSTALLDIR/usr/bin/proxysql_galera_checker
     )
     exit_value=$?
 
