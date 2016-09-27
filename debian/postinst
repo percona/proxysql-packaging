@@ -9,6 +9,11 @@ if [ -f /etc/proxysql.cnf ]; then
     chmod 0640 /etc/proxysql.cnf
 fi
 
+if [ -f /etc/proxysql-admin.cnf ]; then
+    chmod 0640 /etc/proxysql-admin.cnf
+    chown root:proxysql /etc/proxysql-admin.cnf
+fi
+
 if [ -f /etc/init.d/proxysql ]; then
     chmod 0755 /etc/init.d/proxysql
     chown proxysql:proxysql /etc/init.d/proxysql
@@ -19,11 +24,22 @@ if [ -f /usr/bin/proxysql_galera_checker ]; then
     chown root:proxysql /usr/bin/proxysql_galera_checker
 fi
 
+if [ -f /usr/bin/proxysql_node_monitor ]; then
+    chmod 0750 /usr/bin/proxysql_node_monitor
+    chown root:proxysql /usr/bin/proxysql_node_monitor
+fi
+
 if [ -d /var/lib/proxysql ]; then
+    chown -R proxysql:proxysql /var/lib/proxysql
+else
+    mkdir /var/lib/proxysql
     chown -R proxysql:proxysql /var/lib/proxysql
 fi
 
 if [ -d /var/run/proxysql ]; then
+    chown -R proxysql:proxysql /var/run/proxysql
+else
+    mkdir /var/run/proxysql
     chown -R proxysql:proxysql /var/run/proxysql
 fi
 
