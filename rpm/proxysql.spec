@@ -59,7 +59,6 @@ rm -rf %{buildroot}
 
 
 %post
-mkdir /var/run/%{name}
 chkconfig --add %{name}
 
 
