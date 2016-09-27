@@ -17,7 +17,6 @@ Source2 : proxysql-admin.cnf
 Source3 : proxysql_galera_checker
 Source4 : proxysql_node_monitor
 URL: http://www.proxysql.com/
-
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
@@ -30,8 +29,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 sed -i -e 's/c++11/c++0x/' lib/Makefile
 sed -i -e 's/c++11/c++0x/' src/Makefile
 make clean
-make -j 4 build_deps
-make -j 4
+make
 
 %install
 install -d %{buildroot}/%{_bindir}
@@ -75,13 +73,13 @@ chkconfig --del %{name}
 %{_bindir}/proxysql_galera_checker
 %{_bindir}/proxysql-admin
 %{_bindir}/proxysql_node_monitor
-%config(noreplace) %{_sysconfdir}/%{name}.cnf
 %defattr(-,proxysql,proxysql,-)
 %{_bindir}/proxysql
 %{_sysconfdir}/init.d/%{name}
 /var/lib/proxysql
 /var/run/proxysql
 %defattr(-,root,proxysql,-)
+%config(noreplace) %{_sysconfdir}/%{name}.cnf
 %config(noreplace) %{_sysconfdir}/proxysql-admin.cnf
 
 

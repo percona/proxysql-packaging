@@ -6,6 +6,7 @@ if [ -f /usr/bin/proxysql ]; then
 fi
 
 if [ -f /etc/proxysql.cnf ]; then
+    chown root:proxysql /etc/proxysql.cnf
     chmod 0640 /etc/proxysql.cnf
 fi
 

@@ -42,12 +42,12 @@ proxysqldir = proxysql
 override_dh_auto_configure:
 	@echo "RULES.$@"
 
-	make clean && make -j 4 build_deps && make -j 4
+	make clean && make
 	touch $@ 
 
 override_dh_auto_build:
 	@echo "RULES.$@"
-	make clean && make -j 4 build_deps && make -j 4
+	make clean && make
 	touch $@ 
 
 override_dh_auto_install:
