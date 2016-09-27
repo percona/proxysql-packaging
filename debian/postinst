@@ -47,3 +47,4 @@ if [ -f /usr/bin/proxysql-admin ]; then
     chmod 0755 /usr/bin/proxysql-admin
     chown proxysql:proxysql /usr/bin/proxysql-admin
 fi
+update-rc.d proxysql defaults
