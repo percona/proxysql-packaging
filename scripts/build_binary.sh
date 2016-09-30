@@ -64,7 +64,7 @@ else
 
 fi
 SOURCEDIR="$(cd $(dirname "$0"); cd ../../; pwd)"
-VERSION=1.2.0
+VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}')"
 
 # Compilation flags
 export CC=${CC:-gcc}
