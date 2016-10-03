@@ -66,7 +66,6 @@ chkconfig --add %{name}
 
 %postun
 rm -rf /var/run/%{name}
-chkconfig --del %{name}
 
 %files
 %defattr(-,root,root,-)
