@@ -100,6 +100,13 @@ mkdir "$INSTALLDIR"
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
         git clone https://github.com/percona/proxysql-admin-tool.git
+        cd proxysql-admin-tool
+            git fetch origin
+            #PAT_TAG - proxysql-admin-tool tag
+            if [ ! -z ${PAT_TAG} ]; then
+                git checkout ${PAT_TAG}
+            fi
+        cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
         install -m 0775 proxysql-admin-tool/proxysql_node_monitor $INSTALLDIR/usr/bin/proxysql-admin
         install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
