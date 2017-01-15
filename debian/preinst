@@ -9,3 +9,14 @@ if ! getent passwd proxysql >/dev/null;
 then
     adduser --ingroup proxysql --system --disabled-login --no-create-home --home /var/lib/proxysql --shell /bin/false --gecos "ProxySQL" proxysql >/dev/null
 fi
+
+cat > /tmp/proxysql.templates <<'!EOF!'
+Template: proxysql/postrm_remove_data
+Type: boolean
+Default: false
+Description: Remove data directory?
+ This operation will remove the data directory at '/var/lib/proxysql' that stores all related meta-data. You can take data backup before removing the data directories.
+!EOF!
+
+debconf-loadtemplate proxysql /tmp/proxysql.templates
+rm -rf /tmp/proxysql.templates
