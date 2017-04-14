@@ -16,6 +16,7 @@ Source1 : proxysql-admin
 Source2 : proxysql-admin.cnf
 Source3 : proxysql_galera_checker
 Source4 : proxysql_node_monitor
+Source5 : LICENSE
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -24,6 +25,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %prep
 %setup -q
+install %SOURCE5 %{name}-%{version}
 
 %build
 sed -i -e 's/c++11/c++0x/' lib/Makefile
@@ -80,7 +82,7 @@ rm -rf /var/run/%{name}
 %defattr(-,root,proxysql,-)
 %config(noreplace) %{_sysconfdir}/%{name}.cnf
 %config(noreplace) %{_sysconfdir}/proxysql-admin.cnf
-
+%doc LICENSE
 
 %changelog
 * Wed Sep 21 2016  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.2.3-1.0.1
