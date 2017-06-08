@@ -20,3 +20,7 @@ Description: Remove data directory?
 
 debconf-loadtemplate proxysql /tmp/proxysql.templates
 rm -rf /tmp/proxysql.templates
+
+#DEBHELPER#
+
+exit 0

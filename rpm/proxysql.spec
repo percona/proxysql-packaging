@@ -56,18 +56,50 @@ rm -rf %{buildroot}
 /usr/sbin/groupadd -g 28 -o -r proxysql >/dev/null 2>&1 || :
 /usr/sbin/useradd  -g proxysql -o -r -d /var/lib/proxysql -s /bin/false \
     -c "ProxySQL" -u 28 proxysql >/dev/null 2>&1 || :
+STATUS_FILE=/tmp/PROXYSQL_UPGRADE_MARKER
+EXIST=$(ps wwaux | grep /usr/bin/proxysql | grep -v grep | wc -l )
+if [ "$EXIST" -gt "0" ]; then
+    echo "SERVER_TO_START=1" >> $STATUS_FILE
+else
+    echo "SERVER_TO_START=0" >> $STATUS_FILE
+fi
+
 
 
 %post
-chkconfig --add %{name}
-
+case "$1" in
+    1)
+        chkconfig --add %{name}
+    ;;
+    2)
+        STATUS_FILE=/tmp/PROXYSQL_UPGRADE_MARKER
+        if [ -f $STATUS_FILE ] ; then
+            SERVER_TO_START=`grep '^SERVER_TO_START=' $STATUS_FILE | cut -c17-`
+            rm -f $STATUS_FILE
+        else
+            SERVER_TO_START=''
+        fi
+        if [ "x$SERVER_TO_START" = "x1" ]; then
+            %{_sysconfdir}/init.d/proxysql restart
+        fi
+        chkconfig --add %{name}
+    ;;
+esac
+exit 0
 
 %preun
-/sbin/service proxysql stop >/dev/null 2>&1 || :
-/sbin/chkconfig --del proxysql
+    echo "HERE $1" > /tmp/test
+if [ "$1" = "0" ]; then
+    /sbin/service proxysql stop >/dev/null 2>&1 || :
+    /sbin/chkconfig --del %{name}
+fi
+exit 0
 
 %postun
-rm -rf /var/run/%{name}
+if [ "$1" = "0" ]; then
+    rm -rf /var/run/%{name}
+fi
+exit 0
 
 %files
 %defattr(-,root,root,-)

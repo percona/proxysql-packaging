@@ -14,17 +14,9 @@ fi
 stop_server() {
   set +e
   if [ -x /usr/sbin/invoke-rc.d ]; then
-    invoke-rc.d proxysql stop
+    invoke-rc.d proxysql restart
   else
-    /etc/init.d/proxysql stop
-  fi
-  errno=$?
-  set -e
-
-  if [ "$?" != 0 ]; then
-    echo "Trying to stop the ProxySQL service resulted in exitcode $?." 1>&2
-    echo "Stop it yourself and try again!" 1>&2
-    exit 1
+    /etc/init.d/proxysql restart
   fi
 }
 
