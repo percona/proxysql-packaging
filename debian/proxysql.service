@@ -1,0 +1,15 @@
+[Unit]
+After=network.target
+
+[Service]
+Type=forking
+Restart=no
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+RemainAfterExit=yes
+LimitNOFILE=102400
+LimitCORE=1073741824
+ExecStart=/etc/init.d/proxysql start
+ExecStop=/etc/init.d/proxysql stop
