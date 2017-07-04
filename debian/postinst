@@ -52,8 +52,12 @@ case "$1" in
             chown proxysql:proxysql /usr/bin/proxysql-admin
         fi
         update-rc.d proxysql defaults
-        if [[ `systemctl is-system-running` =~ running ]]; then
-            /bin/systemctl restart proxysql
+        if [ -f /bin/systemctl ]; then
+            if [[ `systemctl is-system-running` =~ running ]]; then
+                /bin/systemctl restart proxysql
+            else
+                /etc/init.d/proxysql restart
+            fi
         else
             /etc/init.d/proxysql restart
         fi
