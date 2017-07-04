@@ -14,9 +14,11 @@ fi
 stop_server() {
   set +e
   if [ -x /usr/sbin/invoke-rc.d ]; then
-    invoke-rc.d proxysql restart
+    invoke-rc.d proxysql stop
   else
-    /etc/init.d/proxysql restart
+    if [ -f /etc/init.d/proxysql ]; then
+      /etc/init.d/proxysql stop
+    fi
   fi
 }
 
