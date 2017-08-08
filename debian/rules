@@ -53,6 +53,7 @@ override_dh_auto_build:
 override_dh_auto_install:
 	@echo "RULES.$@"
 	mkdir -p $(TMP)/etc
+	mkdir -p $(TMP)/etc/logrotate.d
 	mkdir -p $(TMP)/var/lib/proxysql
 	mkdir -p $(TMP)/var/run/proxysql
 	mkdir -p $(TMP)/etc/init.d
@@ -64,4 +65,6 @@ override_dh_auto_install:
 	cp tools/proxysql_galera_checker $(TMP)/proxysql_galera_checker
 	cp tools/proxysql-admin $(TMP)/proxysql-admin
 	cp tools/proxysql_node_monitor $(TMP)/proxysql_node_monitor
+	cp tools/proxysql-logrotate $(TMP)/proxysql-logrotate
+
 

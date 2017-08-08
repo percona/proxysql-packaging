@@ -4,4 +4,5 @@ etc/proxysql-admin.cnf /etc/
 etc/init.d/proxysql /etc/init.d/
 proxysql_galera_checker /usr/bin/ 
 proxysql-admin /usr/bin/ 
-proxysql_node_monitor /usr/bin/ 
+proxysql_node_monitor /usr/bin/
+proxysql-logrotate /etc/logrotate.d/ 
