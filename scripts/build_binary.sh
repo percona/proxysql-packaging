@@ -95,9 +95,9 @@ mkdir "$INSTALLDIR"
         mkdir -p $INSTALLDIR/usr/bin
         mkdir -p $INSTALLDIR/etc
         mkdir -p $INSTALLDIR/etc/init.d
+        mkdir -p $INSTALLDIR/etc/logrotate.d
         install -m 0755 src/proxysql $INSTALLDIR/usr/bin
         install -m 0640 etc/proxysql.cnf $INSTALLDIR/etc
-        install -m 0640 etc/proxysql.cnf $INSTALLDIR/etc/logrotate.d
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
         git clone https://github.com/percona/proxysql-admin-tool.git
