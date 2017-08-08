@@ -17,8 +17,10 @@ Source2 : proxysql-admin.cnf
 Source3 : proxysql_galera_checker
 Source4 : proxysql_node_monitor
 Source5 : LICENSE
+Source6 : proxysql-logrotate
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+Requires: logrotate
 
 %description
 %{summary}
@@ -37,6 +39,7 @@ make
 install -d %{buildroot}/%{_bindir}
 install -d  %{buildroot}/%{_sysconfdir}
 install -d  %{buildroot}/%{_sysconfdir}/init.d
+install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
@@ -46,7 +49,7 @@ install -d %{buildroot}/var/run/proxysql
 install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
 install -m 0775 %SOURCE3 %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0775 %SOURCE4 %{buildroot}/%{_bindir}/proxysql_node_monitor
-
+install -m 0644 %SOURCE6 %{buildroot}%{_sysconfdir}/logrotate.d/proxysql-logrotate
 
 %clean
 rm -rf %{buildroot}
@@ -106,6 +109,7 @@ exit 0
 %{_bindir}/proxysql_galera_checker
 %{_bindir}/proxysql-admin
 %{_bindir}/proxysql_node_monitor
+%{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
 %{_bindir}/proxysql
 %{_sysconfdir}/init.d/%{name}
@@ -117,6 +121,9 @@ exit 0
 %doc LICENSE
 
 %changelog
+* Tue Aug 09 2017  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.3.9-1.1
+- added proxysql-logrotate
+
 * Wed Sep 21 2016  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.2.3-1.0.1
 - added proxysql-admin tool
 
