@@ -118,7 +118,14 @@ mkdir "$INSTALLDIR"
 
     if test "x$exit_value" = "x0"
     then
-      $TAR czf "proxysql-$VERSION-$(uname -s)-$(uname -m).tar.gz" \
+      if [ -f /etc/debian_version ]; then
+        export OS_RELEASE="$(lsb_release -sc)"
+      fi
+      if [ -f /etc/redhat-release ]; then
+        export OS_RELEASE="centos$(lsb_release -sr | awk -F'.' '{print $1}')"
+        RHEL=$(rpm --eval %rhel)
+      fi
+      $TAR czf "proxysql-$VERSION-$(uname -s)-$OS_RELEASE-$(uname -m).tar.gz" \
             --owner=0 --group=0 -C "$INSTALLDIR/../" \
             "proxysql-$VERSION-$(uname -s)-$(uname -m)"
     fi
