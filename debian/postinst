@@ -54,12 +54,15 @@ case "$1" in
         update-rc.d proxysql defaults
         if [ -f /bin/systemctl ]; then
             if [[ `systemctl is-system-running` =~ running ]]; then
-                /bin/systemctl restart proxysql
+                /bin/systemctl stop proxysql
+                /bin/systemctl start proxysql
             else
-                /etc/init.d/proxysql restart
+                /etc/init.d/proxysql stop
+                /etc/init.d/proxysql start
             fi
         else
-            /etc/init.d/proxysql restart
+            /etc/init.d/proxysql stop
+            /etc/init.d/proxysql start
         fi
     ;;
     abort-upgrade|abort-remove|abort-configure)

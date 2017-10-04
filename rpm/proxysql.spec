@@ -83,7 +83,8 @@ case "$1" in
             SERVER_TO_START=''
         fi
         if [ "x$SERVER_TO_START" = "x1" ]; then
-            %{_sysconfdir}/init.d/proxysql restart
+            %{_sysconfdir}/init.d/proxysql stop
+            %{_sysconfdir}/init.d/proxysql start
         fi
         chkconfig --add %{name}
     ;;
