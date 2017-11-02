@@ -1,6 +1,5 @@
 Source: proxysql
 Build-Depends: debhelper (>= 9), debconf, pkg-config, g++, cmake
-Version: @@VERSION@@
 Maintainer: Rene Cannao <rene.cannao@gmail.com>
 Section: misc
 Priority: optional
