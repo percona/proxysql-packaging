@@ -96,6 +96,7 @@ mkdir "$INSTALLDIR"
         mkdir -p $INSTALLDIR/etc
         mkdir -p $INSTALLDIR/etc/init.d
         mkdir -p $INSTALLDIR/etc/logrotate.d
+        mkdir -p $INSTALLDIR/tests
         install -m 0755 src/proxysql $INSTALLDIR/usr/bin
         install -m 0640 etc/proxysql.cnf $INSTALLDIR/etc
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
@@ -113,6 +114,7 @@ mkdir "$INSTALLDIR"
         install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
         install -m 0640 proxysql-admin-tool/proxysql-logrotate $INSTALLDIR/etc/logrotate.d/
         install -m 0775 proxysql-admin-tool/proxysql_galera_checker $INSTALLDIR/usr/bin/proxysql_galera_checker
+	install -m 0775 proxysql-admin-tool/tests/* $INSTALLDIR/tests
     )
     exit_value=$?
 
