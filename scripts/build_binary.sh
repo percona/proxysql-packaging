@@ -110,6 +110,7 @@ mkdir "$INSTALLDIR"
             fi
         cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
+        install -m 0775 proxysql-admin-tool/proxysql-status $INSTALLDIR/usr/bin/proxysql-status
         install -m 0775 proxysql-admin-tool/proxysql_node_monitor $INSTALLDIR/usr/bin/proxysql_node_monitor
         install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
         install -m 0640 proxysql-admin-tool/proxysql-logrotate $INSTALLDIR/etc/logrotate.d/
