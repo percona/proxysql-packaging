@@ -111,6 +111,7 @@ exit 0
 %defattr(-,root,root,-)
 %{_bindir}/proxysql_galera_checker
 %{_bindir}/proxysql-admin
+%{_bindir}/proxysql-status
 %{_bindir}/proxysql_node_monitor
 %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
