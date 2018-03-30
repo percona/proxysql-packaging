@@ -18,6 +18,7 @@ Source3 : proxysql_galera_checker
 Source4 : proxysql_node_monitor
 Source5 : LICENSE
 Source6 : proxysql-logrotate
+Source7 : proxysql-status
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: logrotate
@@ -49,6 +50,7 @@ install -d %{buildroot}/var/run/proxysql
 install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
 install -m 0775 %SOURCE3 %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0775 %SOURCE4 %{buildroot}/%{_bindir}/proxysql_node_monitor
+install -m 0775 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
 install -m 0644 %SOURCE6 %{buildroot}%{_sysconfdir}/logrotate.d/proxysql-logrotate
 
 %clean
