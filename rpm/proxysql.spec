@@ -44,6 +44,7 @@ install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
+sed -i 's|proxysql \$OPTS|su proxysql -s /bin/sh -c "/usr/bin/proxysql \$OPTS"|' etc/init.d/proxysql
 install -m 0755 etc/init.d/proxysql %{buildroot}/%{_sysconfdir}/init.d
 install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
@@ -111,6 +112,7 @@ exit 0
 %defattr(-,root,root,-)
 %{_bindir}/proxysql_galera_checker
 %{_bindir}/proxysql-admin
+%{_bindir}/proxysql-status
 %{_bindir}/proxysql_node_monitor
 %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
