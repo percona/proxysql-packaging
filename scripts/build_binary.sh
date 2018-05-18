@@ -5,7 +5,7 @@ set -ue
 # Examine parameters
 TARGET="$(uname -m)"
 TARGET_CFLAGS=''
-
+#
 # Some programs that may be overriden
 TAR=${TAR:-tar}
 
@@ -101,12 +101,13 @@ mkdir "$INSTALLDIR"
         install -m 0640 etc/proxysql.cnf $INSTALLDIR/etc
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
+        rm -fr proxysql-admin-tool
         git clone https://github.com/percona/proxysql-admin-tool.git
         cd proxysql-admin-tool
             git fetch origin
             #PAT_TAG - proxysql-admin-tool tag
-            if [ -n "${PAT_TAG}" ]; then
-                git checkout ${PAT_TAG}
+            if [ -n "${PAT_TAG:-}" ]; then
+                git checkout "${PAT_TAG}"
             fi
         cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
