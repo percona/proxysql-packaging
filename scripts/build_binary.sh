@@ -34,7 +34,7 @@ done
 if test "$#" -eq 0
 then
     WORKDIR="$(readlink -f $(dirname $0)/../../../../)"
-    
+
     # Check that the current directory is not empty
     if test "x$(echo *)" != "x*"
     then
@@ -105,7 +105,7 @@ mkdir "$INSTALLDIR"
         cd proxysql-admin-tool
             git fetch origin
             #PAT_TAG - proxysql-admin-tool tag
-            if [ ! -z ${PAT_TAG} ]; then
+            if [ -n "${PAT_TAG}" ]; then
                 git checkout ${PAT_TAG}
             fi
         cd ../
@@ -135,9 +135,9 @@ mkdir "$INSTALLDIR"
 
     # Clean up build dir
     rm -rf "proxysql-$VERSION-$(uname -s)-$(uname -m)"
-    
+
     exit $exit_value
-    
+
 )
 exit_value=$?
 
