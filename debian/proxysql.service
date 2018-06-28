@@ -5,6 +5,8 @@ After=network.target
 WantedBy=multi-user.target
 
 [Service]
+User=proxysql
+Group=proxysql
 Type=forking
 Restart=no
 TimeoutSec=5min
