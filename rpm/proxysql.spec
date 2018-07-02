@@ -22,6 +22,7 @@ Source7 : proxysql-status
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: logrotate
+Requires(pre): shadow-utils
 
 %description
 %{summary}
@@ -59,9 +60,10 @@ rm -rf %{buildroot}
 
 
 %pre
-/usr/sbin/groupadd -g 28 -o -r proxysql >/dev/null 2>&1 || :
-/usr/sbin/useradd  -g proxysql -o -r -d /var/lib/proxysql -s /bin/false \
-    -c "ProxySQL" -u 28 proxysql >/dev/null 2>&1 || :
+getent group proxysql >/dev/null || groupadd -r proxysql
+useradd -r -g proxysql -r -d /var/lib/proxysql -s /bin/false \
+    -c "ProxySQL" proxysql >/dev/null 2>&1 || :
+
 STATUS_FILE=/tmp/PROXYSQL_UPGRADE_MARKER
 EXIST=$(ps wwaux | grep /usr/bin/proxysql | grep -v grep | wc -l )
 if [ "$EXIST" -gt "0" ]; then
