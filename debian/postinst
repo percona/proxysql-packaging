@@ -24,13 +24,13 @@ case "$1" in
         fi
 
         if [ -f /usr/bin/proxysql_galera_checker ]; then
-            chmod 0750 /usr/bin/proxysql_galera_checker
-            chown root:proxysql /usr/bin/proxysql_galera_checker
+            chmod 0755 /usr/bin/proxysql_galera_checker
+            chown root:root /usr/bin/proxysql_galera_checker
         fi
 
         if [ -f /usr/bin/proxysql_node_monitor ]; then
-            chmod 0750 /usr/bin/proxysql_node_monitor
-            chown root:proxysql /usr/bin/proxysql_node_monitor
+            chmod 0755 /usr/bin/proxysql_node_monitor
+            chown root:root /usr/bin/proxysql_node_monitor
         fi
 
         if [ -d /var/lib/proxysql ]; then
