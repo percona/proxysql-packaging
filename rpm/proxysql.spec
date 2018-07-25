@@ -45,7 +45,7 @@ install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
-sed -i 's|proxysql \$OPTS|su proxysql -s /bin/sh -c "/usr/bin/proxysql \$OPTS"|' etc/init.d/proxysql
+sed -i 's|proxysql \$OPTS|if [[ $(whoami) = "proxysql" ]]; then \n proxysql $OPTS\n else \n su proxysql -s /bin/sh -c "/usr/bin/proxysql $OPTS" \n fi|' etc/init.d/proxysql
 install -m 0755 etc/init.d/proxysql %{buildroot}/%{_sysconfdir}/init.d
 install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
