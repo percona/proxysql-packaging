@@ -72,6 +72,12 @@ case "$1" in
                     /etc/init.d/proxysql start
                 fi
             fi
+	    deb-systemd-helper unmask proxysql.service >/dev/null || true
+	    if deb-systemd-helper --quiet was-enabled proxysql.service; then
+        	deb-systemd-helper enable proxysql.service >/dev/null || true
+	    else
+                deb-systemd-helper update-state proxysql.service >/dev/null || true
+	    fi
         else
             if [ -e /usr/sbin/invoke-rc.d ]; then
                 /usr/sbin/invoke-rc.d proxysql stop
@@ -88,4 +94,3 @@ case "$1" in
     exit 1
     ;;
 esac
-#DEBHELPER#
