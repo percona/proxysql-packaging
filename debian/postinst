@@ -54,7 +54,14 @@ case "$1" in
             chown proxysql:proxysql /usr/bin/proxysql-admin
         fi
         update-rc.d proxysql defaults
+	PROXYSQL_WAS_RUNNING=$(ps wwaux| grep -c proxysql)
         if [ -f /bin/systemctl ]; then
+	    deb-systemd-helper unmask proxysql.service >/dev/null || true
+	    if deb-systemd-helper --quiet was-enabled proxysql.service; then
+        	deb-systemd-helper enable proxysql.service >/dev/null || true
+	    else
+                deb-systemd-helper update-state proxysql.service >/dev/null || true
+	    fi
             if [[ `systemctl is-system-running` =~ running ]]; then
             	if [ -e /usr/sbin/invoke-rc.d ]; then
                     /usr/sbin/invoke-rc.d proxysql stop
@@ -72,12 +79,6 @@ case "$1" in
                     /etc/init.d/proxysql start
                 fi
             fi
-	    deb-systemd-helper unmask proxysql.service >/dev/null || true
-	    if deb-systemd-helper --quiet was-enabled proxysql.service; then
-        	deb-systemd-helper enable proxysql.service >/dev/null || true
-	    else
-                deb-systemd-helper update-state proxysql.service >/dev/null || true
-	    fi
         else
             if [ -e /usr/sbin/invoke-rc.d ]; then
                 /usr/sbin/invoke-rc.d proxysql stop
@@ -86,6 +87,10 @@ case "$1" in
                 /etc/init.d/proxysql stop
                 /etc/init.d/proxysql start
             fi
+        fi
+	PROXYSQL_RUNNING=$(ps wwaux| grep -c proxysql)
+        if [ "${PROXYSQL_WAS_RUNNING}" -gt "${PROXYSQL_RUNNING}" ]; then
+            /usr/sbin/service proxysql start
         fi
     ;;
     abort-upgrade|abort-remove|abort-configure)
