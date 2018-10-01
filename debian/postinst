@@ -62,7 +62,7 @@ case "$1" in
 	    else
                 deb-systemd-helper update-state proxysql.service >/dev/null || true
 	    fi
-            if [[ `systemctl is-system-running` =~ running ]]; then
+            if [[ `ps -p 1 | awk '{print $4}' | grep -v CMD` =~ systemd ]]; then
             	if [ -e /usr/sbin/invoke-rc.d ]; then
                     /usr/sbin/invoke-rc.d proxysql stop
                     /usr/sbin/invoke-rc.d proxysql start
