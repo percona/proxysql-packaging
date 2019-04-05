@@ -1,5 +1,6 @@
 Source: proxysql
 Build-Depends: debhelper (>= 9), debconf, pkg-config, g++, cmake
+Version: @@VERSION@@
 Maintainer: Rene Cannao <rene.cannao@gmail.com>
 Section: misc
 Priority: optional
@@ -7,7 +8,7 @@ Homepage: http://www.proxysql.com
 Standards-Version: 3.9.2
 
 
-Package: proxysql
+Package: proxysql2
 Architecture: amd64
 Description: High performance MySQL proxy
  ProxySQL is a fast, reliable MySQL proxy with advanced runtime configuration management (virtually no configuration change requires a restart). 

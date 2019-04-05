@@ -1,17 +1,18 @@
-# Don't try fancy stuff like debuginfo, which is useless on binary-only
-# packages. Don't strip binary too
-# Be sure buildpolicy set to do nothing
 %define        __spec_install_post %{nil}
 %define          debug_package %{nil}
 %define        __os_install_post %{_dbpath}/brp-compress
 
+%{!?with_systemd:%global systemd 0}
+%{?el7:          %global systemd 1}
+%{?el8:          %global systemd 1}
+
 Summary: A high-performance MySQL proxy
-Name: proxysql
+Name: proxysql2
 Version: @@VERSION@@
 Release: @@RELEASE@@
 License: GPL+
 Group: Development/Tools
-Source0 : %{name}-%{version}.tar.gz
+Source0 : proxysql2-%{version}.tar.gz
 Source1 : proxysql-admin
 Source2 : proxysql-admin.cnf
 Source3 : proxysql_galera_checker
@@ -23,6 +24,20 @@ URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: logrotate
 Requires(pre): shadow-utils
+Requires(pre): /usr/sbin/useradd, /usr/bin/getent
+Requires(postun): /usr/sbin/userdel
+%if 0%{?systemd}
+BuildRequires:  systemd
+BuildRequires:  pkgconfig(systemd)
+Requires(post):   systemd
+Requires(preun):  systemd
+Requires(postun): systemd
+%else
+Requires(post):   /sbin/chkconfig
+Requires(preun):  /sbin/chkconfig
+Requires(preun):  /sbin/service
+%endif
+
 
 %description
 %{summary}
@@ -46,14 +61,22 @@ install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
 sed -i 's|proxysql \$OPTS|if [[ $(whoami) = "proxysql" ]]; then \n proxysql $OPTS\n else \n su proxysql -s /bin/sh -c "/usr/bin/proxysql $OPTS" \n fi|' etc/init.d/proxysql
-install -m 0755 etc/init.d/proxysql %{buildroot}/%{_sysconfdir}/init.d
+%if 0%{?systemd}
+  install -m 0755 -d %{buildroot}/%{_unitdir}
+  install -m 0755 systemd/system/proxysql.service %{buildroot}/%{_unitdir}/proxysql.service
+%else
+  install -m 0755 -d %{buildroot}/etc/rc.d/init.d
+  install -m 0755 etc/init.d/proxysql %{buildroot}/%{_sysconfdir}/init.d
+%endif
+
 install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
 install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
 install -m 0775 %SOURCE3 %{buildroot}/%{_bindir}/proxysql_galera_checker
+install -m 0775 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
 install -m 0775 %SOURCE4 %{buildroot}/%{_bindir}/proxysql_node_monitor
 install -m 0775 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
-install -m 0644 %SOURCE6 %{buildroot}%{_sysconfdir}/logrotate.d/proxysql-logrotate
+install -m 0644 etc/logrotate.d/proxysql %{buildroot}%{_sysconfdir}/logrotate.d/proxysql-logrotate
 
 %clean
 rm -rf %{buildroot}
@@ -75,55 +98,63 @@ fi
 
 
 %post
+
 case "$1" in
     1)
-        chkconfig --add %{name}
-    ;;
-    2)
-        STATUS_FILE=/tmp/PROXYSQL_UPGRADE_MARKER
-        if [ -f $STATUS_FILE ] ; then
-            SERVER_TO_START=`grep '^SERVER_TO_START=' $STATUS_FILE | cut -c17-`
-            rm -f $STATUS_FILE
-        else
-            SERVER_TO_START=''
-        fi
-        if [ "x$SERVER_TO_START" = "x1" ]; then
-            %{_sysconfdir}/init.d/proxysql stop
-            %{_sysconfdir}/init.d/proxysql start
-        fi
-        chkconfig --add %{name}
+        %if 0%{?systemd}
+            %systemd_post proxysql.service
+            if [ $1 == 1 ]; then
+                /usr/bin/systemctl enable proxysql >/dev/null 2>&1 || :
+            fi
+        %else
+            if [ $1 == 1 ]; then
+                /sbin/chkconfig --add proxysql
+            fi
+        %endif
     ;;
 esac
+exit 0
+
+%postun
+%if 0%{?systemd}
+  %systemd_postun_with_restart proxysql.service
+%else
+  if [ $1 -ge 1 ]; then
+    /sbin/service proxysql restart >/dev/null 2>&1 || :
+  fi
+%endif
+if [ "$1" = "0" ]; then
+    rm -rf /var/run/proxysql
+fi
 exit 0
 
 %preun
     echo "HERE $1" > /tmp/test
 if [ "$1" = "0" ]; then
     /sbin/service proxysql stop >/dev/null 2>&1 || :
-    /sbin/chkconfig --del %{name}
-fi
-exit 0
-
-%postun
-if [ "$1" = "0" ]; then
-    rm -rf /var/run/%{name}
+    /sbin/chkconfig --del proxysql
 fi
 exit 0
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/proxysql_galera_checker
+%{_bindir}/proxysql_galera_writer
 %{_bindir}/proxysql-admin
 %{_bindir}/proxysql-status
 %{_bindir}/proxysql_node_monitor
-%{_sysconfdir}/logrotate.d/proxysql-logrotate
+%config(noreplace) %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
 %{_bindir}/proxysql
-%{_sysconfdir}/init.d/%{name}
+%if 0%{?systemd}
+%{_unitdir}/proxysql.service
+%else
+%{_sysconfdir}/init.d/proxysql
+%endif
 /var/lib/proxysql
 /var/run/proxysql
 %defattr(-,root,proxysql,-)
-%config(noreplace) %{_sysconfdir}/%{name}.cnf
+%config(noreplace) %{_sysconfdir}/proxysql.cnf
 %config(noreplace) %{_sysconfdir}/proxysql-admin.cnf
 %doc LICENSE
 
