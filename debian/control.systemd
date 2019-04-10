@@ -1,4 +1,4 @@
-Source: proxysql
+Source: proxysql2
 Build-Depends: debhelper (>= 9), debconf, pkg-config, g++, cmake, dh-systemd
 Version: @@VERSION@@
 Maintainer: Rene Cannao <rene.cannao@gmail.com>
