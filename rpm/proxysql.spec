@@ -128,8 +128,13 @@ exit 0
 %preun
     echo "HERE $1" > /tmp/test
 if [ "$1" = "0" ]; then
+%if 0%{?systemd}
+    /bin/systemctl disable proxysql.service >/dev/null 2>&1 || :
+    /bin/systemctl stop proxysql.service > /dev/null 2>&1 || :
+$else
     /sbin/service proxysql stop >/dev/null 2>&1 || :
     /sbin/chkconfig --del proxysql
+%endif
 fi
 exit 0
 
