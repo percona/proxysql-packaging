@@ -15,8 +15,6 @@ Group: Development/Tools
 Source0 : proxysql2-%{version}.tar.gz
 Source1 : proxysql-admin
 Source2 : proxysql-admin.cnf
-Source3 : proxysql_galera_checker
-Source4 : proxysql_node_monitor
 Source5 : LICENSE
 Source6 : proxysql-logrotate
 Source7 : proxysql-status
@@ -72,9 +70,8 @@ sed -i 's|proxysql \$OPTS|if [[ $(whoami) = "proxysql" ]]; then \n proxysql $OPT
 install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
 install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
-install -m 0775 %SOURCE3 %{buildroot}/%{_bindir}/proxysql_galera_checker
+install -m 0775 tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0775 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
-install -m 0775 %SOURCE4 %{buildroot}/%{_bindir}/proxysql_node_monitor
 install -m 0775 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
 install -m 0644 etc/logrotate.d/proxysql %{buildroot}%{_sysconfdir}/logrotate.d/proxysql-logrotate
 
@@ -142,7 +139,6 @@ exit 0
 %{_bindir}/proxysql_galera_writer
 %{_bindir}/proxysql-admin
 %{_bindir}/proxysql-status
-%{_bindir}/proxysql_node_monitor
 %config(noreplace) %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
 %{_bindir}/proxysql

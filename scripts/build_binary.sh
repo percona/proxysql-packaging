@@ -87,7 +87,7 @@ mkdir "$INSTALLDIR"
     (
         cd $SOURCEDIR
 
-        # Install the f1iles
+        # Install the files
         make clean
         mkdir -p "$INSTALLDIR"
         make -j 4 build_deps
@@ -100,6 +100,7 @@ mkdir "$INSTALLDIR"
         install -m 0755 src/proxysql $INSTALLDIR/usr/bin
         install -m 0640 etc/proxysql.cnf $INSTALLDIR/etc
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
+        cp -r tools/* $INSTALLDIR/usr/bin/
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
         rm -fr proxysql-admin-tool
         git clone https://github.com/percona/proxysql-admin-tool.git
@@ -112,10 +113,8 @@ mkdir "$INSTALLDIR"
         cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
         install -m 0775 proxysql-admin-tool/proxysql-status $INSTALLDIR/usr/bin/proxysql-status
-        install -m 0775 proxysql-admin-tool/proxysql_node_monitor $INSTALLDIR/usr/bin/proxysql_node_monitor
         install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
         install -m 0640 proxysql-admin-tool/proxysql-logrotate $INSTALLDIR/etc/logrotate.d/
-        install -m 0775 proxysql-admin-tool/proxysql_galera_checker $INSTALLDIR/usr/bin/proxysql_galera_checker
 	install -m 0775 proxysql-admin-tool/tests/* $INSTALLDIR/tests
     )
     exit_value=$?

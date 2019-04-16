@@ -30,11 +30,6 @@ case "$1" in
             chown root:root /usr/bin/proxysql_galera_checker
         fi
 
-        if [ -f /usr/bin/proxysql_node_monitor ]; then
-            chmod 0755 /usr/bin/proxysql_node_monitor
-            chown root:root /usr/bin/proxysql_node_monitor
-        fi
-
         if [ -d /var/lib/proxysql ]; then
             chown -R proxysql:proxysql /var/lib/proxysql
         else

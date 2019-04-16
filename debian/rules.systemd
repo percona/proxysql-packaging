@@ -66,7 +66,6 @@ override_dh_auto_install:
 	cp tools/proxysql_galera_checker.sh $(TMP)/proxysql_galera_checker
 	cp tools/proxysql_galera_writer.pl $(TMP)/proxysql_galera_writer
 	cp tools/proxysql-admin $(TMP)/proxysql-admin
-	cp tools/proxysql_node_monitor $(TMP)/proxysql_node_monitor
 	cp tools/proxysql-logrotate $(TMP)/proxysql-logrotate
 	cp tools/proxysql-status $(TMP)/proxysql-status
 	dh_systemd_enable || true
