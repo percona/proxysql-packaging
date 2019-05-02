@@ -68,7 +68,4 @@ override_dh_auto_install:
 	cp tools/proxysql-admin $(TMP)/proxysql-admin
 	cp tools/proxysql-logrotate $(TMP)/proxysql-logrotate
 	cp tools/proxysql-status $(TMP)/proxysql-status
-	dh_systemd_enable || true
-
-override_dh_systemd_start:
-	dh_systemd_start --restart-after-upgrade
+	cp debian/proxysql.service $(TMP)/proxysql.service

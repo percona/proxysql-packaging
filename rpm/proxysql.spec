@@ -58,7 +58,6 @@ install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
-sed -i 's|proxysql \$OPTS|if [[ $(whoami) = "proxysql" ]]; then \n proxysql $OPTS\n else \n su proxysql -s /bin/sh -c "/usr/bin/proxysql $OPTS" \n fi|' etc/init.d/proxysql
 %if 0%{?systemd}
   install -m 0755 -d %{buildroot}/%{_unitdir}
   install -m 0755 systemd/system/proxysql.service %{buildroot}/%{_unitdir}/proxysql.service
@@ -120,18 +119,14 @@ exit 0
     /sbin/service proxysql restart >/dev/null 2>&1 || :
   fi
 %endif
-if [ "$1" = "0" ]; then
-    rm -rf /var/run/proxysql
-fi
 exit 0
 
 %preun
-    echo "HERE $1" > /tmp/test
 if [ "$1" = "0" ]; then
 %if 0%{?systemd}
     /bin/systemctl disable proxysql.service >/dev/null 2>&1 || :
     /bin/systemctl stop proxysql.service > /dev/null 2>&1 || :
-$else
+%else
     /sbin/service proxysql stop >/dev/null 2>&1 || :
     /sbin/chkconfig --del proxysql
 %endif
