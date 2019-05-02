@@ -8,4 +8,5 @@ proxysql_galera_checker /usr/bin/
 proxysql-admin /usr/bin/ 
 proxysql-status /usr/bin/ 
 proxysql_node_monitor /usr/bin/
-proxysql-logrotate /etc/logrotate.d/ 
+proxysql-logrotate /etc/logrotate.d/
+proxysql.service /lib/systemd/system/ 
