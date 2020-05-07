@@ -72,7 +72,7 @@ install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
 install -m 0775 tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0775 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
 install -m 0775 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
-install -m 0644 etc/logrotate.d/proxysql %{buildroot}%{_sysconfdir}/logrotate.d/proxysql-logrotate
+install -m 0644 %SOURCE6 %{buildroot}/%{_sysconfdir}/logrotate.d/proxysql-logrotate
 
 %clean
 rm -rf %{buildroot}
