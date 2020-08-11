@@ -30,6 +30,13 @@ do
     esac
 done
 
+if [ -f /etc/debian_version ]; then
+    GLIBC_VER_TMP="$(dpkg-query -W -f='${Version}' libc6 | awk -F'-' '{print $1}')"
+else
+    GLIBC_VER_TMP="$(rpm glibc -qa --qf %{VERSION})"
+fi
+export GLIBC_VER=".glibc${GLIBC_VER_TMP}"
+
 # Working directory
 if test "$#" -eq 0
 then
@@ -75,7 +82,7 @@ export MAKE_JFLAG=-j4
 
 # Create a temporary working directory
 BASEINSTALLDIR="$(cd "$WORKDIR" && TMPDIR="$WORKDIR_ABS" mktemp -d proxysql-build.XXXXXX)"
-INSTALLDIR="$WORKDIR_ABS/$BASEINSTALLDIR/proxysql-$VERSION-$(uname -s)-$(uname -m)"   # Make it absolute
+INSTALLDIR="$WORKDIR_ABS/$BASEINSTALLDIR/proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER"   # Make it absolute
 
 mkdir "$INSTALLDIR"
 
@@ -122,20 +129,101 @@ mkdir "$INSTALLDIR"
 
     if test "x$exit_value" = "x0"
     then
-      if [ -f /etc/debian_version ]; then
-        export OS_RELEASE="$(lsb_release -sc)"
-      fi
-      if [ -f /etc/redhat-release ]; then
-        export OS_RELEASE="centos$(lsb_release -sr | awk -F'.' '{print $1}')"
-        RHEL=$(rpm --eval %rhel)
-      fi
-      $TAR czf "proxysql-$VERSION-$(uname -s)-$OS_RELEASE-$(uname -m).tar.gz" \
+
+        cd "$INSTALLDIR"
+        LIBLIST="libcrypto.so libssl.so libk5crypto.so libkrb5support.so libgssapi_krb5.so libkrb5.so"
+        DIRLIST="usr/bin lib/private"
+
+        LIBPATH=""
+
+        function gather_libs {
+            local elf_path=$1
+            for lib in $LIBLIST; do
+                for elf in $(find $elf_path -maxdepth 1 -exec file {} \; | grep 'ELF ' | cut -d':' -f1); do
+                    IFS=$'\n'
+                    for libfromelf in $(ldd $elf | grep $lib | awk '{print $3}'); do
+                        if [ ! -f lib/private/$(basename $(readlink -f $libfromelf)) ] && [ ! -L lib/$(basename $(readlink -f $libfromelf)) ]; then
+                            echo "Copying lib $(basename $(readlink -f $libfromelf))"
+                            cp $(readlink -f $libfromelf) lib/private
+
+                            echo "Symlinking lib $(basename $(readlink -f $libfromelf))"
+                            cd lib
+                            ln -s private/$(basename $(readlink -f $libfromelf)) $(basename $(readlink -f $libfromelf))
+                            cd -
+
+                            LIBPATH+=" $(echo $libfromelf | grep -v $(pwd))"
+                        fi
+                    done
+                    unset IFS
+                done
+            done
+        }
+
+        function set_runpath {
+            # Set proper runpath for bins but check before doing anything
+            local elf_path=$1
+            local r_path=$2
+            for elf in $(find $elf_path -maxdepth 1 -exec file {} \; | grep 'ELF ' | cut -d':' -f1); do
+                echo "Checking LD_RUNPATH for $elf"
+                if [ -z $(patchelf --print-rpath $elf) ]; then
+                    echo "Changing RUNPATH for $elf"
+                    patchelf --set-rpath $r_path $elf
+                fi
+            done
+        }
+
+        function replace_libs {
+            local elf_path=$1
+            for libpath_sorted in $LIBPATH; do
+                for elf in $(find $elf_path -maxdepth 1 -exec file {} \; | grep 'ELF ' | cut -d':' -f1); do
+                    LDD=$(ldd $elf | grep $libpath_sorted|head -n1|awk '{print $1}')
+                    if [[ ! -z $LDD  ]]; then
+                        echo "Replacing lib $(basename $(readlink -f $libpath_sorted)) for $elf"
+                        patchelf --replace-needed $LDD $(basename $(readlink -f $libpath_sorted)) $elf
+                    fi
+                done
+            done
+        }
+        function check_libs {
+            local elf_path=$1
+            for elf in $(find $elf_path -maxdepth 1 -exec file {} \; | grep 'ELF ' | cut -d':' -f1); do
+                if ! ldd $elf; then
+                    exit 1
+                fi
+            done
+        }
+
+        if [ ! -d lib/private ]; then
+            mkdir -p lib/private
+        fi
+        # Gather libs
+        for DIR in $DIRLIST; do
+            gather_libs $DIR
+        done
+
+        # Set proper runpath
+        set_runpath usr/bin '$ORIGIN/../../lib/private/'
+        set_runpath lib/private '$ORIGIN'
+
+        # Replace libs
+        for DIR in $DIRLIST; do
+            replace_libs $DIR
+        done
+
+        # Make final check in order to determine any error after linkage
+        for DIR in $DIRLIST; do
+            check_libs $DIR
+        done
+
+        cd "$WORKDIR"
+
+        $TAR czf "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz" \
             --owner=0 --group=0 -C "$INSTALLDIR/../" \
-            "proxysql-$VERSION-$(uname -s)-$(uname -m)"
+            "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER"
     fi
 
     # Clean up build dir
-    rm -rf "proxysql-$VERSION-$(uname -s)-$(uname -m)"
+    rm -rf "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER"
 
     exit $exit_value
 
