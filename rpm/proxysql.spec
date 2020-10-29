@@ -18,6 +18,8 @@ Source2 : proxysql-admin.cnf
 Source5 : LICENSE
 Source6 : proxysql-logrotate
 Source7 : proxysql-status
+Source8 : proxysql-admin-common
+Source9 : proxysql-login-file
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: logrotate
@@ -69,6 +71,8 @@ install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
 install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
 install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
+install -m 0775 %SOURCE8 %{buildroot}/%{_bindir}/proxysql-admin-common
+install -m 0775 %SOURCE9 %{buildroot}/%{_bindir}/proxysql-login-file
 install -m 0775 tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0775 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
 install -m 0775 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
@@ -138,6 +142,8 @@ exit 0
 %{_bindir}/proxysql_galera_checker
 %{_bindir}/proxysql_galera_writer
 %{_bindir}/proxysql-admin
+%{_bindir}/proxysql-admin-common
+%{_bindir}/proxysql-login-file
 %{_bindir}/proxysql-status
 %config(noreplace) %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)

@@ -3,8 +3,10 @@ etc/proxysql.cnf /etc/
 etc/proxysql-admin.cnf /etc/
 etc/init.d/proxysql /etc/init.d/
 proxysql_galera_writer /usr/bin/
-proxysql_galera_checker /usr/bin/ 
-proxysql-admin /usr/bin/ 
-proxysql-status /usr/bin/ 
+proxysql_galera_checker /usr/bin/
+proxysql-admin /usr/bin/
+proxysql-admin-common /usr/bin/
+proxysql-login-file /usr/bin/
+proxysql-status /usr/bin/
 proxysql-logrotate /etc/logrotate.d/
 proxysql.service /lib/systemd/system/

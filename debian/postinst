@@ -48,6 +48,14 @@ case "$1" in
             chmod 0755 /usr/bin/proxysql-admin
             chown proxysql:proxysql /usr/bin/proxysql-admin
         fi
+        if [ -f /usr/bin/proxysql-admin-common ]; then
+            chmod 0755 /usr/bin/proxysql-admin-common
+            chown proxysql:proxysql /usr/bin/proxysql-admin-common
+        fi
+        if [ -f /usr/bin/proxysql-login-file ]; then
+            chmod 0755 /usr/bin/proxysql-login-file
+            chown proxysql:proxysql /usr/bin/proxysql-login-file
+        fi
         update-rc.d proxysql defaults
 	PROXYSQL_WAS_RUNNING=$(ps wwaux| grep -c proxysql)
         if [ -f /bin/systemctl ]; then
