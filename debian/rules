@@ -67,4 +67,6 @@ override_dh_auto_install:
 	cp tools/proxysql-admin $(TMP)/proxysql-admin
 	cp tools/proxysql-logrotate $(TMP)/proxysql-logrotate
 	cp tools/proxysql-status $(TMP)/proxysql-status
+	cp tools/proxysql-admin-common $(TMP)/proxysql-admin-common
+	cp tools/proxysql-login-files $(TMP)/proxysql-login-file
 

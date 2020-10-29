@@ -69,3 +69,5 @@ override_dh_auto_install:
 	cp tools/proxysql-status $(TMP)/proxysql-status
 	cp tools/openssl $(TMP)/proxysql-admin-openssl
 	cp debian/proxysql.service $(TMP)/proxysql.service
+	cp tools/proxysql-admin-common $(TMP)/proxysql-admin-common
+	cp tools/proxysql-login-files $(TMP)/proxysql-login-file
