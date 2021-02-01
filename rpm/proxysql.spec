@@ -7,12 +7,12 @@
 %{?el8:          %global systemd 1}
 
 Summary: A high-performance MySQL proxy
-Name: proxysql2
+Name: proxysql21
 Version: @@VERSION@@
 Release: @@RELEASE@@
 License: GPL+
 Group: Development/Tools
-Source0 : proxysql2-%{version}.tar.gz
+Source0 : proxysql21-%{version}.tar.gz
 Source1 : proxysql-admin
 Source2 : proxysql-admin.cnf
 Source5 : LICENSE
