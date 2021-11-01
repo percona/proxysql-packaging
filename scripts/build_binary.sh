@@ -97,6 +97,7 @@ mkdir "$INSTALLDIR"
         # Install the files
         make clean
         mkdir -p "$INSTALLDIR"
+        sed -i -e 's@^\(\s\+cd curl/curl \&\& ./configure .*\) \(--with-ssl=.*\)$@\1 --without-zstd \2@' deps/Makefile
         make -j 4 build_deps
         make -j 4
         mkdir -p $INSTALLDIR/usr/bin
