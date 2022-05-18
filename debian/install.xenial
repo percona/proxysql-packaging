@@ -11,3 +11,4 @@ proxysql-status /usr/bin/
 proxysql-logrotate /etc/logrotate.d/
 proxysql.service /lib/systemd/system/
 proxysql-admin-openssl /usr/bin/
+pxc_scheduler_handler /usr/bin/

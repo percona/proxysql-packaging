@@ -20,6 +20,7 @@ Source6 : proxysql-logrotate
 Source7 : proxysql-status
 Source8 : proxysql-admin-common
 Source9 : proxysql-login-file
+Source10 : pxc_scheduler_handler
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: logrotate
@@ -77,6 +78,7 @@ install -m 0775 tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysq
 install -m 0775 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
 install -m 0775 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
 install -m 0644 %SOURCE6 %{buildroot}/%{_sysconfdir}/logrotate.d/proxysql-logrotate
+install -m 0775 %SOURCE10 %{buildroot}/%{_bindir}/pxc_scheduler_handler
 
 %clean
 rm -rf %{buildroot}
@@ -145,6 +147,7 @@ exit 0
 %{_bindir}/proxysql-admin-common
 %{_bindir}/proxysql-login-file
 %{_bindir}/proxysql-status
+%{_bindir}/pxc_scheduler_handler
 %config(noreplace) %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
 %{_bindir}/proxysql
@@ -161,6 +164,9 @@ exit 0
 %doc LICENSE
 
 %changelog
+* Wed May 18 2022 Vadim Yalovets <vadim.yalovets@percona.com> 2.3.2-1.1
+- PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
+
 * Tue Aug 09 2017  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.3.9-1.1
 - added proxysql-logrotate
 

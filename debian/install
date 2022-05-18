@@ -8,5 +8,6 @@ proxysql-admin /usr/bin/
 proxysql-admin-common /usr/bin/
 proxysql-login-file /usr/bin/
 proxysql-status /usr/bin/
+pxc_scheduler_handler /usr/bin/
 proxysql-logrotate /etc/logrotate.d/
 proxysql.service /lib/systemd/system/

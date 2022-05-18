@@ -56,6 +56,10 @@ case "$1" in
             chmod 0755 /usr/bin/proxysql-login-file
             chown proxysql:proxysql /usr/bin/proxysql-login-file
         fi
+        if [ -f /usr/bin/pxc_scheduler_handler ]; then
+            chmod 0755 /usr/bin/pxc_scheduler_handler
+            chown proxysql:proxysql /usr/bin/pxc_scheduler_handler
+        fi
         update-rc.d proxysql defaults
 	PROXYSQL_WAS_RUNNING=$(ps wwaux| grep -c proxysql)
         if [ -f /bin/systemctl ]; then
