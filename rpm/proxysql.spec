@@ -167,7 +167,7 @@ exit 0
 * Wed May 18 2022 Vadim Yalovets <vadim.yalovets@percona.com> 2.3.2-1.1
 - PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
 
-* Tue Aug 09 2017  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.3.9-1.1
+* Wed Aug 09 2017  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.3.9-1.1
 - added proxysql-logrotate
 
 * Wed Sep 21 2016  Evgeniy Patlan <evgeniy.patlan@percona.com> 1.2.3-1.0.1
