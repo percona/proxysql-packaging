@@ -15,6 +15,7 @@ Group: Development/Tools
 Source0 : proxysql2-%{version}.tar.gz
 Source1 : proxysql-admin
 Source2 : proxysql-admin.cnf
+Source3 : config.toml
 Source5 : LICENSE
 Source6 : proxysql-logrotate
 Source7 : proxysql-status
@@ -60,8 +61,8 @@ install -d  %{buildroot}/%{_sysconfdir}/init.d
 install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
-install -m 0640 etc/config.toml %{buildroot}/%{_sysconfdir}
 install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
+install -m 0640 %SOURCE3 %{buildroot}/%{_sysconfdir}
 %if 0%{?systemd}
   install -m 0755 -d %{buildroot}/%{_unitdir}
   install -m 0644 systemd/system/proxysql.service %{buildroot}/%{_unitdir}/proxysql.service
