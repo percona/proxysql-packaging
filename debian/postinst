@@ -20,6 +20,11 @@ case "$1" in
             chown root:proxysql /etc/proxysql-admin.cnf
         fi
 
+        if [ -f /etc/config.toml ]; then
+            chmod 0640 /etc/config.toml
+            chown root:proxysql /etc/config.toml
+        fi
+
         if [ -f /etc/init.d/proxysql ]; then
             chmod 0755 /etc/init.d/proxysql
             chown proxysql:proxysql /etc/init.d/proxysql

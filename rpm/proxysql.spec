@@ -60,6 +60,7 @@ install -d  %{buildroot}/%{_sysconfdir}/init.d
 install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
+install -m 0640 etc/config.toml %{buildroot}/%{_sysconfdir}
 install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
 %if 0%{?systemd}
   install -m 0755 -d %{buildroot}/%{_unitdir}
@@ -161,6 +162,7 @@ exit 0
 %defattr(-,root,proxysql,-)
 %config(noreplace) %{_sysconfdir}/proxysql.cnf
 %config(noreplace) %{_sysconfdir}/proxysql-admin.cnf
+%config(noreplace) %{_sysconfdir}/config.toml
 %doc LICENSE
 
 %changelog
