@@ -122,6 +122,7 @@ mkdir "$INSTALLDIR"
             git submodule update --init
             cd percona-scheduler
             /usr/local/go/bin/go build -v -a -o pxc_scheduler_handler
+            ldd -v pxc_scheduler_handler
             cd ../
         cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
