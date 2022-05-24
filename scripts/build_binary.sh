@@ -174,10 +174,12 @@ mkdir "$INSTALLDIR"
             local elf_path=$1
             local r_path=$2
             for elf in $(find $elf_path -maxdepth 1 -exec file {} \; | grep 'ELF ' | cut -d':' -f1); do
-                echo "Checking LD_RUNPATH for $elf"
-                if [ -z $(patchelf --print-rpath $elf) ]; then
-                    echo "Changing RUNPATH for $elf"
-                    patchelf --set-rpath $r_path $elf
+                if [ $elf != "usr/bin/pxc_scheduler_handler" ]; then
+                    echo "Checking LD_RUNPATH for $elf"
+                    if [ -z $(patchelf --print-rpath $elf) ]; then
+                        echo "Changing RUNPATH for $elf"
+                        patchelf --set-rpath $r_path $elf
+                    fi
                 fi
             done
         }
