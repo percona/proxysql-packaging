@@ -118,14 +118,22 @@ mkdir "$INSTALLDIR"
             if [ -n "${PAT_TAG:-}" ]; then
                 git checkout "${PAT_TAG}"
             fi
+            # PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
+            git submodule update --init
+            cd percona-scheduler
+            /usr/local/go/bin/go build -v -a -o pxc_scheduler_handler
+            ldd -v pxc_scheduler_handler
+            cd ../
         cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
         install -m 0775 proxysql-admin-tool/proxysql-admin-common $INSTALLDIR/usr/bin/proxysql-admin-common
         install -m 0775 proxysql-admin-tool/proxysql-login-file $INSTALLDIR/usr/bin/proxysql-login-file
         install -m 0775 proxysql-admin-tool/proxysql-status $INSTALLDIR/usr/bin/proxysql-status
+        install -m 0775 proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler $INSTALLDIR/usr/bin/pxc_scheduler_handler
         install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
+        install -m 0640 proxysql-admin-tool/percona-scheduler/config/config.toml $INSTALLDIR/etc/
         install -m 0640 proxysql-admin-tool/proxysql-logrotate $INSTALLDIR/etc/logrotate.d/
-	install -m 0775 proxysql-admin-tool/tests/* $INSTALLDIR/tests
+        install -m 0775 proxysql-admin-tool/tests/* $INSTALLDIR/tests
     )
     exit_value=$?
 
@@ -166,10 +174,12 @@ mkdir "$INSTALLDIR"
             local elf_path=$1
             local r_path=$2
             for elf in $(find $elf_path -maxdepth 1 -exec file {} \; | grep 'ELF ' | cut -d':' -f1); do
-                echo "Checking LD_RUNPATH for $elf"
-                if [ -z $(patchelf --print-rpath $elf) ]; then
-                    echo "Changing RUNPATH for $elf"
-                    patchelf --set-rpath $r_path $elf
+                if [ $elf != "usr/bin/pxc_scheduler_handler" ]; then
+                    echo "Checking LD_RUNPATH for $elf"
+                    if [ -z $(patchelf --print-rpath $elf) ]; then
+                        echo "Changing RUNPATH for $elf"
+                        patchelf --set-rpath $r_path $elf
+                    fi
                 fi
             done
         }

@@ -20,6 +20,11 @@ case "$1" in
             chown root:proxysql /etc/proxysql-admin.cnf
         fi
 
+        if [ -f /etc/config.toml ]; then
+            chmod 0640 /etc/config.toml
+            chown root:proxysql /etc/config.toml
+        fi
+
         if [ -f /etc/init.d/proxysql ]; then
             chmod 0755 /etc/init.d/proxysql
             chown proxysql:proxysql /etc/init.d/proxysql
@@ -55,6 +60,10 @@ case "$1" in
         if [ -f /usr/bin/proxysql-login-file ]; then
             chmod 0755 /usr/bin/proxysql-login-file
             chown proxysql:proxysql /usr/bin/proxysql-login-file
+        fi
+        if [ -f /usr/bin/pxc_scheduler_handler ]; then
+            chmod 0755 /usr/bin/pxc_scheduler_handler
+            chown proxysql:proxysql /usr/bin/pxc_scheduler_handler
         fi
         update-rc.d proxysql defaults
 	PROXYSQL_WAS_RUNNING=$(ps wwaux| grep -c proxysql)
