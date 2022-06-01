@@ -111,7 +111,7 @@ mkdir "$INSTALLDIR"
         cp -r tools/* $INSTALLDIR/usr/bin/
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
         rm -fr proxysql-admin-tool
-        git clone https://github.com/percona/proxysql-admin-tool.git
+        git clone ${PAT_REPO:-https://github.com/percona/proxysql-admin-tool.git}
         cd proxysql-admin-tool
             git fetch origin
             #PAT_TAG - proxysql-admin-tool tag
