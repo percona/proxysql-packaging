@@ -111,7 +111,6 @@ mkdir "$INSTALLDIR"
         cp -r tools/* $INSTALLDIR/usr/bin/
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
         rm -fr proxysql-admin-tool
-        echo ${PAT_REPO}
         if [ -n "${PAT_REPO:-}" ]; then
             git clone ${PAT_REPO}
         else
