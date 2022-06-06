@@ -111,7 +111,11 @@ mkdir "$INSTALLDIR"
         cp -r tools/* $INSTALLDIR/usr/bin/
         if [ ! -d $INSTALLDIR/var/lib/proxysql ]; then mkdir -p $INSTALLDIR/var/lib/proxysql ; fi
         rm -fr proxysql-admin-tool
-        git clone https://github.com/percona/proxysql-admin-tool.git
+        if [ -n "${PAT_REPO:-}" ]; then
+            git clone ${PAT_REPO}
+        else
+            git clone https://github.com/percona/proxysql-admin-tool.git
+        fi
         cd proxysql-admin-tool
             git fetch origin
             #PAT_TAG - proxysql-admin-tool tag
@@ -131,7 +135,7 @@ mkdir "$INSTALLDIR"
         install -m 0775 proxysql-admin-tool/proxysql-status $INSTALLDIR/usr/bin/proxysql-status
         install -m 0775 proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler $INSTALLDIR/usr/bin/pxc_scheduler_handler
         install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
-        install -m 0640 proxysql-admin-tool/percona-scheduler/config/config.toml $INSTALLDIR/etc/
+        install -m 0640 proxysql-admin-tool/config.toml $INSTALLDIR/etc/
         install -m 0640 proxysql-admin-tool/proxysql-logrotate $INSTALLDIR/etc/logrotate.d/
         install -m 0775 proxysql-admin-tool/tests/* $INSTALLDIR/tests
     )
