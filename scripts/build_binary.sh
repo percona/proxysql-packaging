@@ -105,6 +105,8 @@ mkdir "$INSTALLDIR"
         mkdir -p $INSTALLDIR/etc/init.d
         mkdir -p $INSTALLDIR/etc/logrotate.d
         mkdir -p $INSTALLDIR/tests
+        mkdir -p $INSTALLDIR/var/run/proxysql
+        mkdir -p $INSTALLDIR/var/run/pxc_scheduler_handler
         install -m 0755 src/proxysql $INSTALLDIR/usr/bin
         install -m 0640 etc/proxysql.cnf $INSTALLDIR/etc
         install -m 0755 etc/init.d/proxysql $INSTALLDIR/etc/init.d
@@ -131,11 +133,13 @@ mkdir "$INSTALLDIR"
         cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
         install -m 0775 proxysql-admin-tool/proxysql-admin-common $INSTALLDIR/usr/bin/proxysql-admin-common
+        install -m 0775 proxysql-admin-tool/proxysql-common $INSTALLDIR/usr/bin/proxysql-common
         install -m 0775 proxysql-admin-tool/proxysql-login-file $INSTALLDIR/usr/bin/proxysql-login-file
         install -m 0775 proxysql-admin-tool/proxysql-status $INSTALLDIR/usr/bin/proxysql-status
         install -m 0775 proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler $INSTALLDIR/usr/bin/pxc_scheduler_handler
+        install -m 0775 proxysql-admin-tool/percona-scheduler-admin $INSTALLDIR/usr/bin/percona-scheduler-admin
         install -m 0640 proxysql-admin-tool/proxysql-admin.cnf $INSTALLDIR/etc/
-        install -m 0640 proxysql-admin-tool/config.toml $INSTALLDIR/etc/
+        install -m 0644 proxysql-admin-tool/config.toml $INSTALLDIR/etc/
         install -m 0640 proxysql-admin-tool/proxysql-logrotate $INSTALLDIR/etc/logrotate.d/
         install -m 0775 proxysql-admin-tool/tests/* $INSTALLDIR/tests
     )
