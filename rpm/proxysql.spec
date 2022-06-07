@@ -16,12 +16,14 @@ Source0 : proxysql2-%{version}.tar.gz
 Source1 : proxysql-admin
 Source2 : proxysql-admin.cnf
 Source3 : config.toml
+Source4 : percona-scheduler-admin
 Source5 : LICENSE
 Source6 : proxysql-logrotate
 Source7 : proxysql-status
 Source8 : proxysql-admin-common
 Source9 : proxysql-login-file
 Source10 : pxc_scheduler_handler
+Source11 : proxysql-common
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: logrotate
@@ -75,12 +77,14 @@ install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
 install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
 install -m 0775 %SOURCE8 %{buildroot}/%{_bindir}/proxysql-admin-common
+install -m 0775 %SOURCE11 %{buildroot}/%{_bindir}/proxysql-common
 install -m 0775 %SOURCE9 %{buildroot}/%{_bindir}/proxysql-login-file
 install -m 0775 tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0775 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
 install -m 0775 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
 install -m 0644 %SOURCE6 %{buildroot}/%{_sysconfdir}/logrotate.d/proxysql-logrotate
 install -m 0775 %SOURCE10 %{buildroot}/%{_bindir}/pxc_scheduler_handler
+install -m 0775 %SOURCE4 %{buildroot}/%{_bindir}/percona-scheduler-admin
 
 %clean
 rm -rf %{buildroot}
@@ -147,9 +151,11 @@ exit 0
 %{_bindir}/proxysql_galera_writer
 %{_bindir}/proxysql-admin
 %{_bindir}/proxysql-admin-common
+%{_bindir}/proxysql-common
 %{_bindir}/proxysql-login-file
 %{_bindir}/proxysql-status
 %{_bindir}/pxc_scheduler_handler
+%{_bindir}/percona-scheduler-admin
 %config(noreplace) %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
 %{_bindir}/proxysql
@@ -160,13 +166,18 @@ exit 0
 %endif
 /var/lib/proxysql
 /var/run/proxysql
+/var/run/pxc_scheduler_handler
 %defattr(-,root,proxysql,-)
 %config(noreplace) %{_sysconfdir}/proxysql.cnf
 %config(noreplace) %{_sysconfdir}/proxysql-admin.cnf
+%defattr(644,root,proxysql,-)
 %config(noreplace) %{_sysconfdir}/config.toml
 %doc LICENSE
 
 %changelog
+* Tue Jun 07 2022 Vadim Yalovets <vadim.yalovets@percona.com> 2.3.2-1.2
+- PSQLADM-389 Missing files in the ProxySQL package
+
 * Wed May 18 2022 Vadim Yalovets <vadim.yalovets@percona.com> 2.3.2-1.1
 - PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
 

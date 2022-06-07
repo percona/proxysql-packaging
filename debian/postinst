@@ -21,7 +21,7 @@ case "$1" in
         fi
 
         if [ -f /etc/config.toml ]; then
-            chmod 0640 /etc/config.toml
+            chmod 0644 /etc/config.toml
             chown root:proxysql /etc/config.toml
         fi
 
@@ -49,6 +49,13 @@ case "$1" in
             chown -R proxysql:proxysql /var/run/proxysql
         fi
 
+        if [ -d /var/run/pxc_scheduler_handler ]; then
+            chown -R proxysql:proxysql /var/run/pxc_scheduler_handler
+        else
+            mkdir /var/run/pxc_scheduler_handler
+            chown -R proxysql:proxysql /var/run/pxc_scheduler_handler
+        fi
+
         if [ -f /usr/bin/proxysql-admin ]; then
             chmod 0755 /usr/bin/proxysql-admin
             chown proxysql:proxysql /usr/bin/proxysql-admin
@@ -57,6 +64,10 @@ case "$1" in
             chmod 0755 /usr/bin/proxysql-admin-common
             chown proxysql:proxysql /usr/bin/proxysql-admin-common
         fi
+        if [ -f /usr/bin/proxysql-common ]; then
+            chmod 0755 /usr/bin/proxysql-common
+            chown proxysql:proxysql /usr/bin/proxysql-common
+        fi
         if [ -f /usr/bin/proxysql-login-file ]; then
             chmod 0755 /usr/bin/proxysql-login-file
             chown proxysql:proxysql /usr/bin/proxysql-login-file
@@ -64,6 +75,10 @@ case "$1" in
         if [ -f /usr/bin/pxc_scheduler_handler ]; then
             chmod 0755 /usr/bin/pxc_scheduler_handler
             chown proxysql:proxysql /usr/bin/pxc_scheduler_handler
+        fi
+        if [ -f /usr/bin/percona-scheduler-admin ]; then
+            chmod 0755 /usr/bin/percona-scheduler-admin
+            chown proxysql:proxysql /usr/bin/percona-scheduler-admin
         fi
         update-rc.d proxysql defaults
 	PROXYSQL_WAS_RUNNING=$(ps wwaux| grep -c proxysql)
