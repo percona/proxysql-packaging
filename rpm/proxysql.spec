@@ -75,6 +75,7 @@ install -m 0640 %SOURCE3 %{buildroot}/%{_sysconfdir}
 
 install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
+install -d %{buildroot}/var/run/pxc_scheduler_handler
 install -m 0775 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
 install -m 0775 %SOURCE8 %{buildroot}/%{_bindir}/proxysql-admin-common
 install -m 0775 %SOURCE11 %{buildroot}/%{_bindir}/proxysql-common
@@ -167,11 +168,11 @@ exit 0
 /var/lib/proxysql
 /var/run/proxysql
 /var/run/pxc_scheduler_handler
+%defattr(644,root,proxysql,-)
+%config(noreplace) %{_sysconfdir}/config.toml
 %defattr(-,root,proxysql,-)
 %config(noreplace) %{_sysconfdir}/proxysql.cnf
 %config(noreplace) %{_sysconfdir}/proxysql-admin.cnf
-%defattr(644,root,proxysql,-)
-%config(noreplace) %{_sysconfdir}/config.toml
 %doc LICENSE
 
 %changelog
