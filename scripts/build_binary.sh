@@ -126,10 +126,8 @@ mkdir "$INSTALLDIR"
             fi
             # PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
             git submodule update --init
-            cd percona-scheduler
-            /usr/local/go/bin/go build -v -a -o pxc_scheduler_handler
+            sudo bash -x build_scheduler.sh
             ldd -v pxc_scheduler_handler
-            cd ../
         cd ../
         install -m 0775 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
         install -m 0775 proxysql-admin-tool/proxysql-admin-common $INSTALLDIR/usr/bin/proxysql-admin-common
