@@ -39,6 +39,9 @@ DISTRELEASE = $(shell lsb_release -c -s)
 
 proxysqldir = proxysql
 
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip
+
 override_dh_auto_configure:
 	@echo "RULES.$@"
 

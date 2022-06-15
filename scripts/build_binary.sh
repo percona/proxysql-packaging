@@ -126,6 +126,10 @@ mkdir "$INSTALLDIR"
             fi
             # PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
             git submodule update --init
+            sed -i 's|command -v go|command -v bash|g' build_scheduler.sh
+            BINGO=$(command -v go)
+            sed -i "s|go build|${BINGO} build|g" build_scheduler.sh
+            sed -i "s|go mod|${BINGO} mod|g" build_scheduler.sh
             sudo bash -x build_scheduler.sh
             ldd -v pxc_scheduler_handler
         cd ../
