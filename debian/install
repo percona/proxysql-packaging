@@ -4,7 +4,6 @@ etc/proxysql-admin.cnf /etc/
 etc/config.toml /etc/
 etc/init.d/proxysql /etc/init.d/
 proxysql_galera_writer /usr/bin/
-proxysql_galera_checker /usr/bin/
 proxysql-admin /usr/bin/
 proxysql-admin-common /usr/bin/
 proxysql-common /usr/bin/

@@ -80,7 +80,6 @@ install -m 0755 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
 install -m 0755 %SOURCE8 %{buildroot}/%{_bindir}/proxysql-admin-common
 install -m 0755 %SOURCE11 %{buildroot}/%{_bindir}/proxysql-common
 install -m 0755 %SOURCE9 %{buildroot}/%{_bindir}/proxysql-login-file
-install -m 0755 tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0755 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
 install -m 0755 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
 install -m 0644 %SOURCE6 %{buildroot}/%{_sysconfdir}/logrotate.d/proxysql-logrotate
@@ -148,7 +147,6 @@ exit 0
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/proxysql_galera_checker
 %{_bindir}/proxysql_galera_writer
 %{_bindir}/proxysql-admin
 %{_bindir}/proxysql-admin-common
