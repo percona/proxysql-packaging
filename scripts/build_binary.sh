@@ -151,7 +151,7 @@ mkdir "$INSTALLDIR"
     then
 
         cd "$INSTALLDIR"
-        LIBLIST="libgcrypt.so libtasn1.so libgnutls.so"
+        LIBLIST="libgcrypt.so libtasn1.so libgnutls.so libuuid.so"
         DIRLIST="usr/bin lib/private"
 
         LIBPATH=""
