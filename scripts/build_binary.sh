@@ -76,8 +76,8 @@ VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}')"
 # Compilation flags
 export CC=${CC:-gcc}
 export CXX=${CXX:-g++}
-export CFLAGS=${CFLAGS:-}
-export CXXFLAGS=${CXXFLAGS:-}
+export CFLAGS=-fpic
+export CXXFLAGS=' -std=c++11 -fpic'
 export MAKE_JFLAG=-j4
 
 # Create a temporary working directory

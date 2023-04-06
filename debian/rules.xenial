@@ -13,8 +13,8 @@
 	dh $@
 
 export DH_VERBOSE=1
-export CFLAGS=
-export CXXFLAGS=
+export CFLAGS=-fpic
+export CXXFLAGS=-fpic
 
 TMP=$(CURDIR)/debian/tmp/
 TMPD=$(CURDIR)/debian/tmp-debug/
