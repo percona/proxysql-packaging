@@ -1,7 +1,7 @@
 #!/bin/bash
 # Bail out on errors, be strict
 set -ue
-
+#PROXYSQL_VERSION=2.5.1
 # Examine parameters
 TARGET="$(uname -m)"
 TARGET_CFLAGS=''
@@ -71,7 +71,8 @@ else
 
 fi
 SOURCEDIR="$(cd $(dirname "$0"); cd ../../; pwd)"
-VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}')"
+source $SOURCEDIR/proxysql.properties
+VERSION="$(grep CURVER $SOURCEDIR/proxysql2-${PROXYSQL_VERSION}/Makefile | awk -F'=' '{print $2}')"
 
 # Compilation flags
 export CC=${CC:-gcc}
@@ -92,7 +93,7 @@ mkdir "$INSTALLDIR"
 
     # Build proper
     (
-        cd $SOURCEDIR
+        cd $SOURCEDIR/proxysql2-${PROXYSQL_VERSION}
 
         # Install the files
         make clean
@@ -121,16 +122,15 @@ mkdir "$INSTALLDIR"
         cd proxysql-admin-tool
             git fetch origin
             #PAT_TAG - proxysql-admin-tool tag
-            if [ -n "${PAT_TAG:-}" ]; then
-                git checkout "${PAT_TAG}"
-            fi
+            git checkout v${PROXYSQL_VERSION}-dev
             # PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
             git submodule update --init
             sed -i 's|command -v go|command -v bash|g' build_scheduler.sh
-            BINGO=$(command -v go)
-            sed -i "s|go build|${BINGO} build|g" build_scheduler.sh
-            sed -i "s|go mod|${BINGO} mod|g" build_scheduler.sh
-            sudo bash -x build_scheduler.sh
+#            BINGO=$(command -v go)
+            sed -i 's|command -v go|command -v bash|g' build_scheduler.sh
+            sed -i 's|go build|/usr/bin/go/bin/go build|g' build_scheduler.sh
+            sed -i 's|go mod|/usr/bin/go/bin/go mod|g' build_scheduler.sh
+            bash -x build_scheduler.sh
             ldd -v pxc_scheduler_handler
         cd ../
         install -m 0755 proxysql-admin-tool/proxysql-admin $INSTALLDIR/usr/bin/proxysql-admin
@@ -245,6 +245,7 @@ mkdir "$INSTALLDIR"
     fi
 
     # Clean up build dir
+    cp proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz $SOURCEDIR
     rm -rf "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER"
 
     exit $exit_value
