@@ -713,13 +713,13 @@ REVISION=0
 GIT_BRANCH="v2.1"
 GIT_REPO=https://github.com/percona/proxysql-packaging.git
 PAT_REPO=https://github.com/percona/proxysql-admin-tool.git
-PAT_TAG="v2.5.1-dev"
-PROXYSQL_BRANCH="v2.5.1"
+PAT_TAG="v2.5.2-dev"
+PROXYSQL_BRANCH="v2.5.2"
 PROXYSQL_REPO="https://github.com/sysown/proxysql.git"
 PRODUCT=proxysql2
 DEBUG=0
 parse_arguments PICK-ARGS-FROM-ARGV "$@"
-PROXYSQL_VERSION='2.5.1'
+PROXYSQL_VERSION='2.5.2'
 VERSION=${PROXYSQL_VERSION}
 RELEASE='1'
 PRODUCT_FULL=${PRODUCT}-${VERSION}
