@@ -48,7 +48,11 @@ parse_arguments() {
             --get_sources=*) SOURCE="$val" ;;
             --proxysql_branch=*) PROXYSQL_BRANCH="$val" ;;
             --proxysql_repo=*) PROXYSQL_REPO="$val" ;;
-            --proxysql_ver=*) PROXYSQL_VERSION="$val" ;;
+            --pat_repo=*) PAT_REPO="$val" ;;
+            --pat_tag=*) PAT_TAG="$val" ;;
+            --proxysql_ver=*) VERSION="$val" ;;
+            --repo=*) GIT_REPO="$val" ;;
+            --branch=*) GIT_BRANCH="$val" ;;
             --install_deps=*) INSTALL="$val" ;;
             --help) usage ;;
             *)
@@ -90,7 +94,6 @@ get_sources(){
         echo "Sources will not be downloaded"
         return 0
     fi
-    VERSION=${PROXYSQL_VERSION}
     PRODUCT=proxysql2
     echo "PRODUCT=${PRODUCT}" > proxysql.properties
     PRODUCT_FULL=${PRODUCT}-${VERSION}
@@ -99,7 +102,8 @@ get_sources(){
     echo "REVISION=${REVISION}" >> proxysql.properties
     echo "RPM_RELEASE=${RPM_RELEASE}" >> proxysql.properties
     echo "DEB_RELEASE=${DEB_RELEASE}" >> proxysql.properties
-    echo "PROXYSQL_REPO=${GIT_REPO}" >> proxysql.properties
+    echo "PROXYSQL_REPO=${PROXYSQL_REPO}" >> proxysql.properties
+    echo "GIT_REPO=${GIT_REPO}" >> proxysql.properties
     BRANCH_NAME="${BRANCH}"
     echo "BRANCH_NAME=${BRANCH_NAME}" >> proxysql.properties
     echo "PRODUCT_FULL=${PRODUCT_FULL}" >> proxysql.properties
@@ -586,6 +590,7 @@ build_tarball(){
     mkdir TARGET 
     [ -f /opt/percona-devtoolset/enable ] && source /opt/percona-devtoolset/enable
     [ -f /opt/rh/devtoolset-8/enable ] && source /opt/rh/devtoolset-8/enable
+    source proxysql.properties
     get_tar "source_tarball" 
     TARBALL=$(find . -type f -name 'proxysql*.tar.gz')
     #VERSION_TMP=$(echo ${TARBALL}| awk -F '-' '{print $2}')
@@ -666,7 +671,7 @@ build_deb(){
     mv tools/proxysql-admin.cnf etc/
     sed -i "s:@@VERSION@@:${VERSION}:g" debian/changelog
     sed -i "s:@@VERSION@@:${VERSION}:g" debian/control
-    if [ $DEBIAN_VERSION = "bionic" -o $DEBIAN_VERSION = "jessie" -o $DEBIAN_VERSION = "focal" -o $DEBIAN_VERSION = "jammy" -o $DEBIAN_VERSION = "buster" -o $DEBIAN_VERSION = "stretch" -o $DEBIAN_VERSION = "artful" -o $DEBIAN_VERSION = "bionic" -o ${DEBIAN_VERSION} = "bullseye" ]; then
+    if [ $DEBIAN_VERSION = "bionic" -o $DEBIAN_VERSION = "jessie" -o $DEBIAN_VERSION = "focal" -o $DEBIAN_VERSION = "jammy" -o $DEBIAN_VERSION = "buster" -o $DEBIAN_VERSION = "stretch" -o $DEBIAN_VERSION = "artful" -o $DEBIAN_VERSION = "bionic" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" ]; then
         mv debian/control.systemd debian/control
         mv debian/rules.systemd debian/rules    
     elif [ $DEBIAN_VERSION = "xenial" ] && [[ $VERSION == *2* ]]; then
@@ -676,7 +681,7 @@ build_deb(){
     fi
     dch -m -D "${DEBIAN_VERSION}" --force-distribution -v "2:${VERSION}-${DEB_RELEASE}.${DEBIAN_VERSION}" 'Update distribution'
     unset $(locale|cut -d= -f1)
-    if [ ${DEBIAN_VERSION} = "focal" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" ]; then
+    if [ ${DEBIAN_VERSION} = "focal" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" ]; then
 	sed -i 's:8:9:' debian/compat
         sed -i 's:, dh-systemd::' debian/control
     fi
@@ -713,14 +718,13 @@ REVISION=0
 GIT_BRANCH="v2.1"
 GIT_REPO=https://github.com/percona/proxysql-packaging.git
 PAT_REPO=https://github.com/percona/proxysql-admin-tool.git
-PAT_TAG="v2.5.2-dev"
-PROXYSQL_BRANCH="v2.5.2"
+PAT_TAG="v2.5.1-dev"
+PROXYSQL_BRANCH="v2.1"
 PROXYSQL_REPO="https://github.com/sysown/proxysql.git"
 PRODUCT=proxysql2
 DEBUG=0
 parse_arguments PICK-ARGS-FROM-ARGV "$@"
-PROXYSQL_VERSION='2.5.2'
-VERSION=${PROXYSQL_VERSION}
+VERSION='2.5.1'
 RELEASE='1'
 PRODUCT_FULL=${PRODUCT}-${VERSION}
 
