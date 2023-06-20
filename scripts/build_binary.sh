@@ -1,7 +1,6 @@
 #!/bin/bash
 # Bail out on errors, be strict
 set -ue
-#PROXYSQL_VERSION=2.5.1
 # Examine parameters
 TARGET="$(uname -m)"
 TARGET_CFLAGS=''
@@ -71,8 +70,7 @@ else
 
 fi
 SOURCEDIR="$(cd $(dirname "$0"); cd ../../; pwd)"
-source $SOURCEDIR/proxysql.properties
-VERSION="$(grep CURVER $SOURCEDIR/proxysql2-${PROXYSQL_VERSION}/Makefile | awk -F'=' '{print $2}')"
+VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}')"
 
 # Compilation flags
 export CC=${CC:-gcc}
@@ -93,7 +91,7 @@ mkdir "$INSTALLDIR"
 
     # Build proper
     (
-        cd $SOURCEDIR/proxysql2-${PROXYSQL_VERSION}
+        cd $SOURCEDIR
 
         # Install the files
         make clean
@@ -122,7 +120,9 @@ mkdir "$INSTALLDIR"
         cd proxysql-admin-tool
             git fetch origin
             #PAT_TAG - proxysql-admin-tool tag
-            git checkout v${PROXYSQL_VERSION}-dev
+             if [ -n "${PAT_TAG:-}" ]; then
+                git checkout "${PAT_TAG}"
+            fi
             # PSQLADM-322 Add pxc_scheduler_handler into ProxySQL package
             git submodule update --init
             sed -i 's|command -v go|command -v bash|g' build_scheduler.sh
