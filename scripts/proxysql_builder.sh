@@ -97,8 +97,9 @@ get_sources(){
     PRODUCT=proxysql2
     echo "PRODUCT=${PRODUCT}" > proxysql.properties
     PRODUCT_FULL=${PRODUCT}-${VERSION}
-    echo "VERSION=${VERSION}" > proxysql.properties
-    echo "GIT_VERSION=${GIT_VERSION}" > proxysql.properties
+    echo "VERSION=${VERSION}" >> proxysql.properties
+    echo "PROXYSQL_VERSION=${VERSION}" >> proxysql.properties
+    echo "GIT_VERSION=${GIT_VERSION}" >> proxysql.properties
     echo "REVISION=${REVISION}" >> proxysql.properties
     echo "RPM_RELEASE=${RPM_RELEASE}" >> proxysql.properties
     echo "DEB_RELEASE=${DEB_RELEASE}" >> proxysql.properties
@@ -586,12 +587,13 @@ build_tarball(){
     fi
     export DEBIAN_VERSION=$(lsb_release -sc)
     cd $WORKDIR
-    echo PROXYSQL_VERSION=${VERSION} >> proxysql.properties
     mkdir TARGET 
     [ -f /opt/percona-devtoolset/enable ] && source /opt/percona-devtoolset/enable
     [ -f /opt/rh/devtoolset-8/enable ] && source /opt/rh/devtoolset-8/enable
+    echo "PROXYSQL_VERSION=${VERSION}" > proxysql.properties
+    echo "PAT_TAG=${PAT_TAG}" >> proxysql.properties
     source proxysql.properties
-    get_tar "source_tarball" 
+    get_tar "source_tarball"
     TARBALL=$(find . -type f -name 'proxysql*.tar.gz')
     #VERSION_TMP=$(echo ${TARBALL}| awk -F '-' '{print $2}')
    # echo $VERSION_TMP
@@ -604,6 +606,14 @@ build_tarball(){
     git checkout ${GIT_BRANCH}
     cd $WORKDIR
     gcc --version
+    sed -i 's/$SOURCEDIR\/Makefile/$SOURCEDIR\/proxysql2-${PROXYSQL_VERSION}\/Makefile/' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i 's/cd $SOURCEDIR/cd $SOURCEDIR\/proxysql2-${PROXYSQL_VERSION}/' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i '73i source $SOURCEDIR/proxysql.properties' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i '248i cp proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz $SOURCEDIR' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i 's/s|go build|${BINGO} build|g/s|go build|\/usr\/bin\/go\/bin\/go build|g/' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i 's/s|go mod|${BINGO} mod|g/s|go mod|\/usr\/bin\/go\/bin\/go mod|g/' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i 's/sudo bash/bash/' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i '/BINGO/d' ./proxysql-packaging/scripts/build_binary.sh
     bash -x ./proxysql-packaging/scripts/build_binary.sh ${WORKDIR}/TARGET
 
     cd ${WORKDIR}/TARGET
