@@ -144,6 +144,8 @@ get_sources(){
     sed -i 's:6.7:6:' deps/Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' src/Makefile
     sed -i 's:6.7:6:' src/Makefile
+    sed -i '94s|exit 0||' etc/init.d/proxysql
+    sed -i "s:GITVERSION:\"${GIT_VERSION}-${RPM_RELEASE}\":g" include/proxysql.h
     cd ..
     echo "REVISION=${REVISION}" >> ${WORKDIR}/proxysql.properties
     cd ${PRODUCT_FULL}
@@ -728,13 +730,13 @@ REVISION=0
 GIT_BRANCH="v2.1"
 GIT_REPO=https://github.com/percona/proxysql-packaging.git
 PAT_REPO=https://github.com/percona/proxysql-admin-tool.git
-PAT_TAG="v2.5.1-dev"
-PROXYSQL_BRANCH="v2.1"
+PAT_TAG="v2.5.3-dev"
+PROXYSQL_BRANCH="v2.5.3"
 PROXYSQL_REPO="https://github.com/sysown/proxysql.git"
 PRODUCT=proxysql2
 DEBUG=0
 parse_arguments PICK-ARGS-FROM-ARGV "$@"
-VERSION='2.5.1'
+VERSION=${VERSION}
 RELEASE='1'
 PRODUCT_FULL=${PRODUCT}-${VERSION}
 
