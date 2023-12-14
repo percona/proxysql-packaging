@@ -27,9 +27,9 @@ Source10 : pxc_scheduler_handler
 Source11 : proxysql-common
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: logrotate
+Requires: logrotate procps
 Requires(pre): shadow-utils
-Requires(pre): /usr/sbin/useradd, /usr/bin/getent
+Requires(pre): /usr/sbin/useradd, /usr/bin/getent, /usr/bin/ps
 Requires(postun): /usr/sbin/userdel
 %if 0%{?systemd}
 BuildRequires:  systemd
@@ -56,15 +56,17 @@ sed -i -e 's/c++11/c++0x/' lib/Makefile
 sed -i -e 's/c++11/c++0x/' src/Makefile
 make clean
 make
+mv proxysql-admin-tool/proxysql-admin.cnf proxysql-admin.cnf.in
 
 %install
 install -d %{buildroot}/%{_bindir}
 install -d  %{buildroot}/%{_sysconfdir}
+install -d %{buildroot}/%{_datarootdir}/proxysql/etc
 install -d  %{buildroot}/%{_sysconfdir}/init.d
 install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
-install -m 0640 %SOURCE2 %{buildroot}/%{_sysconfdir}
+install -m 0640 proxysql-admin.cnf.in %{buildroot}/%{_datarootdir}/proxysql/etc/
 install -m 0640 %SOURCE3 %{buildroot}/%{_sysconfdir}
 %if 0%{?systemd}
   install -m 0755 -d %{buildroot}/%{_unitdir}
@@ -123,6 +125,19 @@ case "$1" in
         %endif
     ;;
 esac
+
+if [ ! -f /etc/proxysql-admin.cnf ]; then
+    cp /usr/share/proxysql/etc/proxysql-admin.cnf.in /etc/proxysql-admin.cnf
+    chmod 0640 /etc/proxysql-admin.cnf
+    chown root:proxysql /etc/proxysql-admin.cnf
+fi
+
+EXISTING_FILE_PROPERTIES_COUNT=$(grep "export .*=" /etc/proxysql-admin.cnf | awk -F '[ =]' '{print $2}' | sort -u | wc -l)
+NEW_FILE_PROPERTIES_COUNT=$(grep "export .*=" /usr/share/proxysql/etc/proxysql-admin.cnf.in | awk -F '[ =]' '{print $2}' | sort -u | wc -l)
+
+if [ "$EXISTING_FILE_PROPERTIES_COUNT" -ne "$NEW_FILE_PROPERTIES_COUNT" ]; then
+    echo "NOTE: /usr/share/proxysql/etc/proxysql-admin.cnf.in does not match the configuration of existing /etc/proxysql-admin.cnf. Please review the two files and ensure that the configuration in /etc/proxysql-admin.cnf is updated accordingly."
+fi
 exit 0
 
 %postun
@@ -133,6 +148,12 @@ exit 0
     /sbin/service proxysql restart >/dev/null 2>&1 || :
   fi
 %endif
+
+if [ -f /etc/proxysql-admin.cnf ]; then
+    rm -f /etc/proxysql-admin.cnf
+fi
+
+find /usr/share/proxysql -type d -empty -delete
 exit 0
 
 %preun
@@ -158,6 +179,7 @@ exit 0
 %{_bindir}/proxysql-status
 %{_bindir}/pxc_scheduler_handler
 %{_bindir}/percona-scheduler-admin
+%{_datarootdir}/proxysql/etc/proxysql-admin.cnf.in
 %config(noreplace) %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
 %{_bindir}/proxysql
@@ -173,10 +195,12 @@ exit 0
 %config(noreplace) %{_sysconfdir}/config.toml
 %defattr(-,root,proxysql,-)
 %config(noreplace) %{_sysconfdir}/proxysql.cnf
-%config(noreplace) %{_sysconfdir}/proxysql-admin.cnf
 %doc LICENSE
 
 %changelog
+* Wed Dec 13 2023 Muhammad Aqeel <muhammad.aqeel@percona.com> 2.3.2-1.3
+- PSQLADM-164 Installing proxysql-admin.cnf.in in installation directory
+
 * Tue Jun 07 2022 Vadim Yalovets <vadim.yalovets@percona.com> 2.3.2-1.2
 - PSQLADM-389 Missing files in the ProxySQL package
 

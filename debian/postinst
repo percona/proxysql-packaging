@@ -15,7 +15,8 @@ case "$1" in
             chmod 0640 /etc/proxysql.cnf
         fi
 
-        if [ -f /etc/proxysql-admin.cnf ]; then
+        if [ ! -f /etc/proxysql-admin.cnf ]; then
+            cp /usr/share/proxysql/etc/proxysql-admin.cnf.in /etc/proxysql-admin.cnf
             chmod 0640 /etc/proxysql-admin.cnf
             chown root:proxysql /etc/proxysql-admin.cnf
         fi
@@ -126,3 +127,10 @@ case "$1" in
     exit 1
     ;;
 esac
+
+EXISTING_FILE_PROPERTIES_COUNT=$(grep "export .*=" /etc/proxysql-admin.cnf | awk -F '[ =]' '{print $2}' | sort -u | wc -l)
+NEW_FILE_PROPERTIES_COUNT=$(grep "export .*=" /usr/share/proxysql/etc/proxysql-admin.cnf.in | awk -F '[ =]' '{print $2}' | sort -u | wc -l)
+
+if [ "$EXISTING_FILE_PROPERTIES_COUNT" -ne "$NEW_FILE_PROPERTIES_COUNT" ]; then
+    echo "NOTE: /usr/share/proxysql/etc/proxysql-admin.cnf.in does not match the configuration of existing /etc/proxysql-admin.cnf. Please review the two files and ensure that the configuration in /etc/proxysql-admin.cnf is updated accordingly."
+fi

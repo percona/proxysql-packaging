@@ -42,6 +42,7 @@ if [ "$1" = "purge" ]; then
   if [ "$RET" = "true" ]; then
     rm -rf /var/lib/proxysql
     rm -rf /var/run/proxysql
+    rm -f /etc/proxysql-admin.cnf
     userdel proxysql || true
   fi
   db_fset proxysql/postrm_remove_data seen false
