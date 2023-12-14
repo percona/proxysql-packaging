@@ -116,9 +116,6 @@ get_sources(){
     git clone ${GIT_REPO}
     cd proxysql-packaging
     git checkout ${GIT_BRANCH}
-    sed -i 's/proxysql-login-files/proxysql-login-file/' debian/rules
-    sed -i 's/proxysql-login-files/proxysql-login-file/' debian/rules.systemd
-    sed -i 's/proxysql-login-files/proxysql-login-file/' debian/rules.xenial || true
     cd ../
     git clone ${PAT_REPO}
     cd proxysql-admin-tool
