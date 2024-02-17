@@ -5,8 +5,12 @@ After=network.target
 [Service]
 Type=forking
 RuntimeDirectory=proxysql
-ExecStart=/usr/bin/proxysql -c /etc/proxysql.cnf
+#PermissionsStartOnly=true
+#ExecStartPre=/usr/bin/mkdir -p /var/run/proxysql /var/run/proxysql
+#ExecStartPre=/usr/bin/chown -R proxysql: /var/run/proxysql/
+ExecStart=/usr/bin/proxysql --idle-threads -c /etc/proxysql.cnf $PROXYSQL_OPTS
 PIDFile=/var/lib/proxysql/proxysql.pid
+#StandardError=null  # all output is in stderr
 SyslogIdentifier=proxysql
 Restart=no
 User=proxysql
