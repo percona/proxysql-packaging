@@ -137,6 +137,7 @@ get_sources(){
     git checkout ${PROXYSQL_BRANCH}
     GIT_VERSION=${VERSION}-percona
     REVISION=$(git rev-parse --short HEAD)
+    sed -i "s/export CURVER?=.*/export CURVER?=${VERSION}/g" Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' deps/Makefile
     sed -i 's:6.7:6:' deps/Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' src/Makefile
