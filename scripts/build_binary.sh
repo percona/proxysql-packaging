@@ -73,7 +73,7 @@ SOURCEDIR="$(cd $(dirname "$0"); cd ../../; pwd)"
 VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}' | tr -d ' ')"
 
 # Compilation flags
-export CC=${CC:-gcc}
+export CC=${CC:-cc}
 export CXX=${CXX:-g++}
 export CFLAGS=-fpic
 export CXXFLAGS=' -std=c++11 -fpic'
