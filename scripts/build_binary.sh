@@ -76,8 +76,10 @@ VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}' | tr -d ' ')
 export CC=${CC:-cc}
 export CXX=${CXX:-g++}
 export CFLAGS=-fpic
-export CXXFLAGS=' -std=c++11 -fpic'
+export CXXFLAGS=' -fpic'
 export MAKE_JFLAG=-j4
+export CPPFLAGS='-Wdate-time -D_FORTIFY_SOURCE=2'
+export LDFLAGS='-Wl,-z,relro'
 
 # Create a temporary working directory
 BASEINSTALLDIR="$(cd "$WORKDIR" && TMPDIR="$WORKDIR_ABS" mktemp -d proxysql-build.XXXXXX)"
