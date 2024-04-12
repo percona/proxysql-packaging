@@ -78,8 +78,6 @@ export CXX=${CXX:-g++}
 export CFLAGS=-fpic
 export CXXFLAGS=' -fpic'
 export MAKE_JFLAG=-j4
-export CPPFLAGS='-Wdate-time -D_FORTIFY_SOURCE=2'
-export LDFLAGS='-Wl,-z,relro'
 
 # Create a temporary working directory
 BASEINSTALLDIR="$(cd "$WORKDIR" && TMPDIR="$WORKDIR_ABS" mktemp -d proxysql-build.XXXXXX)"
