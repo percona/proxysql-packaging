@@ -73,10 +73,10 @@ SOURCEDIR="$(cd $(dirname "$0"); cd ../../; pwd)"
 VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}' | tr -d ' ')"
 
 # Compilation flags
-export CC=${CC:-cc}
+export CC=${CC:-gcc}
 export CXX=${CXX:-g++}
 export CFLAGS=-fpic
-export CXXFLAGS=' -fpic'
+export CXXFLAGS=' -std=c++11 -fpic'
 export MAKE_JFLAG=-j4
 
 # Create a temporary working directory
