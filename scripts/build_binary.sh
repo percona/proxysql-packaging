@@ -241,10 +241,10 @@ mkdir "$INSTALLDIR"
         done
         
         cd "$WORKDIR"
+        ls -la
 
         $TAR czf "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz" \
-            --owner=0 --group=0 -C "$INSTALLDIR/../" \
-            "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER"
+            --owner=0 --group=0 -C "$INSTALLDIR/../" "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER"
     fi
 
     # Clean up build dir
