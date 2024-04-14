@@ -367,7 +367,7 @@ install_deps() {
           PATH=$PATH:/usr/local/bin
           cmake --version
       fi
-      if [ "x${DEBIAN}" = "xxenial" -o "x${DEBIAN}" = "xbionic" ]; then
+      if [ "x${DEBIAN}" = "xbuster" -o "x${DEBIAN}" = "xbionic" ]; then
 	  wget https://repo.percona.com/percona/apt/percona-release_latest.${DEBIAN}_all.deb
           dpkg -i ./percona-release_latest.${DEBIAN}_all.deb
           percona-release enable tools testing
