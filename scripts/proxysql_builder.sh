@@ -681,7 +681,7 @@ build_deb(){
     mv tools/proxysql-admin.cnf etc/
     sed -i "s:@@VERSION@@:${VERSION}:g" debian/changelog
     sed -i "s:@@VERSION@@:${VERSION}:g" debian/control
-    if [ $DEBIAN_VERSION = "bionic" -o $DEBIAN_VERSION = "jessie" -o $DEBIAN_VERSION = "focal" -o $DEBIAN_VERSION = "jammy" -o $DEBIAN_VERSION = "buster" -o $DEBIAN_VERSION = "stretch" -o $DEBIAN_VERSION = "artful" -o $DEBIAN_VERSION = "bionic" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" ]; then
+    if [ $DEBIAN_VERSION = "bionic" -o $DEBIAN_VERSION = "jessie" -o $DEBIAN_VERSION = "focal" -o $DEBIAN_VERSION = "jammy" -o $DEBIAN_VERSION = "buster" -o $DEBIAN_VERSION = "stretch" -o $DEBIAN_VERSION = "artful" -o $DEBIAN_VERSION = "bionic" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" ]; then
         mv debian/control.systemd debian/control
         mv debian/rules.systemd debian/rules    
     elif [ $DEBIAN_VERSION = "xenial" ] && [[ $VERSION == *2* ]]; then
@@ -691,7 +691,7 @@ build_deb(){
     fi
     dch -m -D "${DEBIAN_VERSION}" --force-distribution -v "2:${VERSION}-${DEB_RELEASE}.${DEBIAN_VERSION}" 'Update distribution'
     unset $(locale|cut -d= -f1)
-    if [ ${DEBIAN_VERSION} = "focal" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" ]; then
+    if [ ${DEBIAN_VERSION} = "focal" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" ]; then
 	sed -i 's:8:9:' debian/compat
         sed -i 's:, dh-systemd::' debian/control
     fi
