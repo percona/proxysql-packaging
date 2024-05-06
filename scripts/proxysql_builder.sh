@@ -182,8 +182,8 @@ get_system(){
     return
 }
 install_go() {
-    wget -q https://dl.google.com/go/go1.17.7.linux-amd64.tar.gz
-    tar -C /usr/bin -xzf go1.17.7.linux-amd64.tar.gz
+    wget -q https://dl.google.com/go/go1.22.2.linux-amd64.tar.gz
+    tar -C /usr/bin -xzf go1.22.2.linux-amd64.tar.gz
     export PATH=$PATH:/usr/bin/go/bin
     go version
     which go
