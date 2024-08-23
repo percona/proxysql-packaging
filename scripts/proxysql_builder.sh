@@ -65,6 +65,11 @@ parse_arguments() {
     done
 }
 
+switch_to_vault_repo() {
+    sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+    sed -i 's|#\s*baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+}
+
 check_workdir(){
     if [ "x$WORKDIR" = "x$CURDIR" ]
     then
@@ -213,15 +218,20 @@ install_deps() {
         exit 1
     fi
     CURPLACE=$(pwd)
-
+    RHEL=$(rpm --eval %rhel)
     if [ "x$OS" = "xrpm" ]; then
+      if [ "x${RHEL}" = "x7" -o "x${RHEL}" = "x8" ]; then
+            switch_to_vault_repo
+      fi
       yum -y install wget which
       add_percona_yum_repo
 #      wget http://jenkins.percona.com/yum-repo/percona-dev.repo
 #      mv -f percona-dev.repo /etc/yum.repos.d/
       yum clean all
       yum -y install curl epel-release
-      RHEL=$(rpm --eval %rhel)
+      if [ "x${RHEL}" = "x7" -o "x${RHEL}" = "x8" ]; then
+            switch_to_vault_repo
+      fi
       if [ x"$RHEL" = x6 ]; then
         until yum -y install centos-release-scl; do
             echo "waiting"
@@ -267,11 +277,7 @@ install_deps() {
       #update_pat
       if [ $RHEL = 8 ]; then
           cat /etc/os-release
-          sed -i 's/mirrorlist=/#mirrorlist=/g' /etc/yum.repos.d/CentOS-*
-          sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
           yum -y update
-          sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
-          sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
           yum -y install python2 gnutls-devel libtool || true
           ln -s /usr/bin/python2.7 /usr/bin/python || true
           rpm -q centos-release || true
@@ -291,7 +297,6 @@ install_deps() {
           yum -y update
           yum -y install python3 gnutls-devel libtool || true
           ln -s /usr/bin/python3.9 /usr/bin/python || true
-#          wget -O /etc/yum.repos.d/percona-dev.repo http://jenkins.percona.com/yum-repo/percona-dev.repo
           yum -y install yum-utils
           yum-config-manager --enable ol9_codeready_builder
           yum -y install epel-release
