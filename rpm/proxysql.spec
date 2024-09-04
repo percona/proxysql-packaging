@@ -175,6 +175,7 @@ exit 0
 %{_bindir}/proxysql-status
 %{_bindir}/pxc_scheduler_handler
 %{_bindir}/percona-scheduler-admin
+%{_bindir}/proxysql
 %if 0%{?systemd}
 %{_unitdir}/proxysql.service
 %else
@@ -183,7 +184,6 @@ exit 0
 %{_datarootdir}/proxysql/etc/proxysql-admin.cnf.in
 %config(noreplace) %{_sysconfdir}/logrotate.d/proxysql-logrotate
 %defattr(-,proxysql,proxysql,-)
-%{_bindir}/proxysql
 /var/lib/proxysql
 /var/run/proxysql
 /var/run/pxc_scheduler_handler

@@ -7,7 +7,7 @@ case "$1" in
         set -e
         if [ -f /usr/bin/proxysql ]; then
             chmod 0755 /usr/bin/proxysql
-            chown proxysql:proxysql /usr/bin/proxysql
+            chown root:root /usr/bin/proxysql
         fi
 
         if [ -f /etc/proxysql.cnf ]; then
