@@ -78,8 +78,6 @@ export CXX=${CXX:-g++}
 export CFLAGS=-fpic
 if [ -f /etc/debian_version ]; then
     export CXXFLAGS=' -std=c++17 -fpic'
-else
-    export CXXFLAGS=' -std=c++11 -fpic'
 fi
 export MAKE_JFLAG=-j4
 
