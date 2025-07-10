@@ -8,12 +8,12 @@
 %{?el9:          %global systemd 1}
 
 Summary: A high-performance MySQL proxy
-Name: proxysql2
+Name: proxysql3
 Version: @@VERSION@@
 Release: @@RELEASE@@
 License: GPL+
 Group: Development/Tools
-Source0 : proxysql2-%{version}.tar.gz
+Source0 : proxysql3-%{version}.tar.gz
 Source1 : proxysql-admin
 Source2 : proxysql-admin.cnf
 Source3 : config.toml

@@ -99,7 +99,7 @@ get_sources(){
         echo "Sources will not be downloaded"
         return 0
     fi
-    PRODUCT=proxysql2
+    PRODUCT=proxysql3
     echo "PRODUCT=${PRODUCT}" > proxysql.properties
     PRODUCT_FULL=${PRODUCT}-${VERSION}
     echo "VERSION=${VERSION}" >> proxysql.properties
@@ -557,7 +557,7 @@ build_source_deb(){
         echo "It is not possible to build source deb here"
         exit 1
     fi
-    #rm -rf proxysql2*
+    #rm -rf proxysql3*
     get_tar "source_tarball"
     rm -f *.dsc *.orig.tar.gz *.debian.tar.gz *.changes
     #
@@ -625,8 +625,8 @@ build_tarball(){
     git checkout ${GIT_BRANCH}
     cd $WORKDIR
     gcc --version
-    sed -i 's/$SOURCEDIR\/Makefile/$SOURCEDIR\/proxysql2-${PROXYSQL_VERSION}\/Makefile/' ./proxysql-packaging/scripts/build_binary.sh
-    sed -i 's/cd $SOURCEDIR/cd $SOURCEDIR\/proxysql2-${PROXYSQL_VERSION}/' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i 's/$SOURCEDIR\/Makefile/$SOURCEDIR\/proxysql3-${PROXYSQL_VERSION}\/Makefile/' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i 's/cd $SOURCEDIR/cd $SOURCEDIR\/proxysql3-${PROXYSQL_VERSION}/' ./proxysql-packaging/scripts/build_binary.sh
     sed -i '73i source $SOURCEDIR/proxysql.properties' ./proxysql-packaging/scripts/build_binary.sh
     sed -i '248i cp proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz $SOURCEDIR' ./proxysql-packaging/scripts/build_binary.sh
     sed -i 's/s|go build|${BINGO} build|g/s|go build|\/usr\/bin\/go\/bin\/go build|g/' ./proxysql-packaging/scripts/build_binary.sh
@@ -756,7 +756,7 @@ PAT_REPO=https://github.com/percona/proxysql-admin-tool.git
 PAT_TAG="v2.5.3-dev"
 PROXYSQL_BRANCH="v2.5.3"
 PROXYSQL_REPO="https://github.com/sysown/proxysql.git"
-PRODUCT=proxysql2
+PRODUCT=proxysql3
 DEBUG=0
 parse_arguments PICK-ARGS-FROM-ARGV "$@"
 VERSION=${VERSION}
