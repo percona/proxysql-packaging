@@ -317,6 +317,7 @@ install_deps() {
           yum -y install epel-release
           yum -y install libcurl-devel libunwind libunwind-devel zlib-devel
           yum -y install libicu-devel libevent-devel
+          yum -y install patchelf
       fi
       if [ $RHEL -eq 7 ]; then
           /usr/bin/python -V
