@@ -42,6 +42,7 @@ Requires(post):   /sbin/chkconfig
 Requires(preun):  /sbin/chkconfig
 Requires(preun):  /sbin/service
 %endif
+Conflicts: proxysql, proxysql2
 
 
 %description
