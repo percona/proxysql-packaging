@@ -315,6 +315,7 @@ install_deps() {
           yum-config-manager --enable ol9_codeready_builder
           yum -y install epel-release
           yum -y install libcurl-devel libunwind libunwind-devel zlib-devel
+          yum -y install libicu-devel
       fi
       if [ $RHEL -eq 7 ]; then
           /usr/bin/python -V
@@ -396,6 +397,7 @@ install_deps() {
       install_go
       #update_pat
     fi
+    apt-get install -y libicu-dev
     return;
 }
 
