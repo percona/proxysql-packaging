@@ -16,5 +16,7 @@ Description: High performance MySQL proxy
 Depends: ${shlibs:Depends}, ${misc:Depends}, debconf-utils, logrotate
 Conflicts: proxysql,
            proxysql2
+Replaces: proxysql,
+          proxysql2
 Pre-Depends: adduser,
              debconf (>= 0.2.17)
