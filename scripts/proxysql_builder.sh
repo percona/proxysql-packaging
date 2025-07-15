@@ -190,18 +190,19 @@ get_system(){
 install_go() {
     export PATH=$PATH:/usr/bin/go/bin
     if [ x"$ARCH" = "xx86_64" ]; then
-        wget https://go.dev/dl/go1.23.1.linux-amd64.tar.gz
+        wget https://go.dev/dl/go1.23.11.linux-amd64.tar.gz
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.23.1.linux-amd64.tar.gz
+        tar -C /usr/bin -xzf go1.23.11.linux-amd64.tar.gz
         #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
         #update-alternatives --set go /usr/local/go/bin/go
     else
-        wget https://go.dev/dl/go1.23.1.linux-arm64.tar.gz
+        wget https://go.dev/dl/go1.23.11.linux-arm64.tar.gz
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.23.1.linux-arm64.tar.gz
+        tar -C /usr/bin -xzf go1.23.11.linux-arm64.tar.gz
         #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
         #update-alternatives --set go /usr/local/go/bin/go
     fi
+    export PATH=$PATH:/usr/bin/go/bin
     go version
     which go
     whereis go
@@ -315,6 +316,8 @@ install_deps() {
           yum-config-manager --enable ol9_codeready_builder
           yum -y install epel-release
           yum -y install libcurl-devel libunwind libunwind-devel zlib-devel
+          yum -y install libicu-devel libevent-devel
+          yum -y install patchelf
       fi
       if [ $RHEL -eq 7 ]; then
           /usr/bin/python -V
@@ -396,6 +399,7 @@ install_deps() {
       install_go
       #update_pat
     fi
+    apt-get install -y libicu-dev libevent-dev
     return;
 }
 
