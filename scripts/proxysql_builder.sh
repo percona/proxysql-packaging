@@ -243,7 +243,11 @@ install_deps() {
 #      wget http://jenkins.percona.com/yum-repo/percona-dev.repo
 #      mv -f percona-dev.repo /etc/yum.repos.d/
       yum clean all
-      yum -y install curl epel-release
+      if [ "x${RHEL}" = "x10" ]; then
+          yum -y install curl oracle-epel-release-el10
+      else
+          yum -y install curl epel-release
+      fi
       if [ "x${RHEL}" = "x7" -o "x${RHEL}" = "x8" ]; then
             switch_to_vault_repo
       fi
@@ -286,7 +290,7 @@ install_deps() {
      #   fi
       fi
      # yum -y install docbook-xsl libxslt-devel
-      INSTALL_LIST="git wget epel-release rpm-build gcc perl automake bzip2 cmake make gcc-c++ gcc git openssl openssl-devel gnutls gnutls-devel libtool patch python3 perl-IPC-Cmd libuuid-devel"
+      INSTALL_LIST="git wget rpm-build gcc perl automake bzip2 cmake make gcc-c++ gcc git openssl openssl-devel gnutls gnutls-devel libtool patch python3 perl-IPC-Cmd libuuid-devel"
       yum -y install ${INSTALL_LIST}
       install_go
       #update_pat
@@ -315,6 +319,14 @@ install_deps() {
           yum -y install yum-utils
           yum-config-manager --enable ol9_codeready_builder
           yum -y install epel-release
+          yum -y install libcurl-devel libunwind libunwind-devel zlib-devel
+          yum -y install libicu-devel libevent-devel
+          yum -y install patchelf
+      fi
+      if [ $RHEL = 10 ]; then
+          yum -y install python3 gnutls-devel libtool || true
+          ln -s /usr/bin/python3.9 /usr/bin/python || true
+          yum-config-manager --enable ol10_codeready_builder
           yum -y install libcurl-devel libunwind libunwind-devel zlib-devel
           yum -y install libicu-devel libevent-devel
           yum -y install patchelf
@@ -398,8 +410,8 @@ install_deps() {
       fi
       install_go
       #update_pat
+      apt-get install -y libicu-dev libevent-dev
     fi
-    apt-get install -y libicu-dev libevent-dev
     return;
 }
 
