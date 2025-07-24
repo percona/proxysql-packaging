@@ -6,6 +6,7 @@
 %{?el7:          %global systemd 1}
 %{?el8:          %global systemd 1}
 %{?el9:          %global systemd 1}
+%{?el10:         %global systemd 1}
 
 Summary: A high-performance MySQL proxy
 Name: proxysql3
