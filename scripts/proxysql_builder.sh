@@ -418,6 +418,7 @@ install_deps() {
       #update_pat
       apt-get install -y libicu-dev libevent-dev
     fi
+    apt-get install -y libicu-dev libevent-dev
     return;
 }
 
