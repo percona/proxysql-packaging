@@ -54,6 +54,10 @@ Conflicts: proxysql, proxysql2
 install %SOURCE5 %{name}-%{version}
 
 %build
+# Force PIC for all C and C++ sources
+export CFLAGS="$CFLAGS -fPIC"
+export CXXFLAGS="$CXXFLAGS -fPIC"
+
 sed -i -e 's/c++11/c++0x/' lib/Makefile
 sed -i -e 's/c++11/c++0x/' src/Makefile
 make clean
