@@ -164,8 +164,7 @@ get_sources(){
     source proxysql.properties
     #
 
-    #tar --owner=0 --group=0 --exclude=.git -czf ${PRODUCT_FULL}.tar.gz ${PRODUCT_FULL}
-    tar --owner=0 --group=0 -czf ${PRODUCT_FULL}.tar.gz ${PRODUCT_FULL}
+    tar --owner=0 --group=0 --exclude=.git -czf ${PRODUCT_FULL}.tar.gz ${PRODUCT_FULL}
     echo "UPLOAD=UPLOAD/experimental/BUILDS/${PRODUCT}/${PRODUCT_FULL}/${PSM_BRANCH}/${REVISION}/${BUILD_ID}" >> proxysql.properties
     mkdir $WORKDIR/source_tarball
     mkdir $CURDIR/source_tarball
