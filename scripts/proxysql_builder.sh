@@ -129,6 +129,7 @@ get_sources(){
         git checkout ${PAT_TAG}
     fi
     sed -i 's:2.0.12:2.0.15:' proxysql-admin
+    update_pat
     cd ..
     git clone ${PROXYSQL_REPO} ${PRODUCT_FULL}
     retval=$?
@@ -142,6 +143,7 @@ get_sources(){
     git checkout ${PROXYSQL_BRANCH}
     GIT_VERSION=${VERSION}-percona
     REVISION=$(git rev-parse --short HEAD)
+    sed -i "s|^GIT_VERSION ?= .*|GIT_VERSION=${VERSION}-percona|" Makefile
     sed -i "s/export CURVER?=.*/export CURVER?=${VERSION}/g" Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' deps/Makefile
     sed -i 's:6.7:6:' deps/Makefile
@@ -479,7 +481,7 @@ build_srpm(){
     #
     cp -av rpm/* rpmbuild/SOURCES
     cd ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool
-    update_pat
+    #update_pat
     cd $WORKDIR
     cp -ap ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool/* rpmbuild/SOURCES/
     cp -ap ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler rpmbuild/SOURCES/
@@ -587,7 +589,7 @@ build_source_deb(){
     
     mv ${TARFILE} ${PRODUCT}_${VERSION}.orig.tar.gz
     cd ${BUILDDIR}/proxysql-admin-tool
-    update_pat
+    #update_pat
     cd ..
     cp -ap proxysql-admin-tool/* tools/
     cp -ap proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler tools/
