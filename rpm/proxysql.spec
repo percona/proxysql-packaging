@@ -15,17 +15,6 @@ Release: @@RELEASE@@
 License: GPL+
 Group: Development/Tools
 Source0 : proxysql3-%{version}.tar.gz
-Source1 : proxysql-admin
-Source2 : proxysql-admin.cnf
-Source3 : config.toml
-Source4 : percona-scheduler-admin
-Source5 : LICENSE
-Source6 : proxysql-logrotate
-Source7 : proxysql-status
-Source8 : proxysql-admin-common
-Source9 : proxysql-login-file
-Source10 : pxc_scheduler_handler
-Source11 : proxysql-common
 URL: http://www.proxysql.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: logrotate procps
@@ -51,7 +40,6 @@ Conflicts: proxysql, proxysql2
 
 %prep
 %setup -q
-install %SOURCE5 %{name}-%{version}
 
 %build
 # Force PIC for all C and C++ sources
@@ -73,7 +61,7 @@ install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0640 proxysql-admin.cnf.in %{buildroot}/%{_datarootdir}/proxysql/etc/
-install -m 0640 %SOURCE3 %{buildroot}/%{_sysconfdir}
+install -m 0640 %{_sourcedir}/config.toml %{buildroot}/%{_sysconfdir}
 %if 0%{?systemd}
   install -m 0755 -d %{buildroot}/%{_unitdir}
   install -m 0644 systemd/system/proxysql.service %{buildroot}/%{_unitdir}/proxysql.service
@@ -86,16 +74,17 @@ install -m 0640 %SOURCE3 %{buildroot}/%{_sysconfdir}
 install -d %{buildroot}/var/lib/proxysql
 install -d %{buildroot}/var/run/proxysql
 install -d %{buildroot}/var/run/pxc_scheduler_handler
-install -m 0755 %SOURCE1 %{buildroot}/%{_bindir}/proxysql-admin
-install -m 0755 %SOURCE8 %{buildroot}/%{_bindir}/proxysql-admin-common
-install -m 0755 %SOURCE11 %{buildroot}/%{_bindir}/proxysql-common
-install -m 0755 %SOURCE9 %{buildroot}/%{_bindir}/proxysql-login-file
+install -m 0755 %{_sourcedir}/proxysql-admin %{buildroot}/%{_bindir}/proxysql-admin
+install -m 0755 %{_sourcedir}/proxysql-admin-common %{buildroot}/%{_bindir}/proxysql-admin-common
+install -m 0755 %{_sourcedir}/proxysql-common %{buildroot}/%{_bindir}/proxysql-common
+install -m 0755 %{_sourcedir}/proxysql-login-file %{buildroot}/%{_bindir}/proxysql-login-file
 install -m 0755 tools/proxysql_galera_checker.sh %{buildroot}/%{_bindir}/proxysql_galera_checker
 install -m 0755 tools/proxysql_galera_writer.pl %{buildroot}/%{_bindir}/proxysql_galera_writer
-install -m 0755 %SOURCE7 %{buildroot}/%{_bindir}/proxysql-status
-install -m 0644 %SOURCE6 %{buildroot}/%{_sysconfdir}/logrotate.d/proxysql-logrotate
-install -m 0755 %SOURCE10 %{buildroot}/%{_bindir}/pxc_scheduler_handler
-install -m 0755 %SOURCE4 %{buildroot}/%{_bindir}/percona-scheduler-admin
+install -m 0755 %{_sourcedir}/proxysql-status %{buildroot}/%{_bindir}/proxysql-status
+install -m 0644 %{_sourcedir}/proxysql-logrotate %{buildroot}/%{_sysconfdir}/logrotate.d/proxysql-logrotate
+install -m 0755 %{_sourcedir}/pxc_scheduler_handler %{buildroot}/%{_bindir}/pxc_scheduler_handler
+install -m 0755 %{_sourcedir}/percona-scheduler-admin %{buildroot}/%{_bindir}/percona-scheduler-admin
+install %{_sourcedir}/LICENSE %{name}-%{version}
 
 %clean
 rm -rf %{buildroot}
