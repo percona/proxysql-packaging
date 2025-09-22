@@ -129,7 +129,6 @@ get_sources(){
         git checkout ${PAT_TAG}
     fi
     sed -i 's:2.0.12:2.0.15:' proxysql-admin
-    update_pat
     cd ..
     git clone ${PROXYSQL_REPO} ${PRODUCT_FULL}
     retval=$?
@@ -479,12 +478,8 @@ build_srpm(){
     tar vxzf ${WORKDIR}/${TARFILE} --wildcards '*/rpm' --strip=1
     #
     cp -av rpm/* rpmbuild/SOURCES
-    cd ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool
     #update_pat
     cd $WORKDIR
-    cp -ap ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool/* rpmbuild/SOURCES/
-    cp -ap ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler rpmbuild/SOURCES/
-    cp -ap ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool/config.toml rpmbuild/SOURCES/
     cd rpmbuild/SOURCES
     
    # wget --no-check-certificate https://download.osgeo.org/postgis/docs/postgis-3.3.1.pdf
@@ -549,6 +544,19 @@ build_rpm(){
     cd rpmbuild/SRPMS/
     #
     cd $WORKDIR
+    git clone ${PAT_REPO}
+    cd proxysql-admin-tool
+    git fetch origin
+    if [ ! -z ${PAT_TAG} ]; then
+        git checkout ${PAT_TAG}
+    fi
+    sed -i 's:2.0.12:2.0.15:' proxysql-admin
+    update_pat
+    cd ${WORKDIR}
+    cp -ap ${WORKDIR}/proxysql-admin-tool/* rpmbuild/SOURCES/
+    cp -ap ${WORKDIR}/proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler rpmbuild/SOURCES/
+    cp -ap ${WORKDIR}/proxysql-admin-tool/config.toml rpmbuild/SOURCES/
+    cd $WORKDIR
     RHEL=$(rpm --eval %rhel)
     ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
     [ -f /opt/percona-devtoolset/enable ] && source /opt/percona-devtoolset/enable
@@ -587,14 +595,8 @@ build_source_deb(){
     #
     
     mv ${TARFILE} ${PRODUCT}_${VERSION}.orig.tar.gz
-    cd ${BUILDDIR}/proxysql-admin-tool
     #update_pat
     cd ..
-    cp -ap proxysql-admin-tool/* tools/
-    cp -ap proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler tools/
-    cp -ap proxysql-admin-tool/config.toml etc/
-    mv tools/LICENSE .
-    mv tools/proxysql-admin.cnf etc/ 
     cd debian
     #rm -rf changelog
     sed -i "s:@@VERSION@@:${VERSION}:g" changelog
@@ -707,13 +709,21 @@ build_deb(){
     #
     dpkg-source -x ${DSC}
     #
-    cd ${PRODUCT}-${VERSION}
+    #cd ${PRODUCT}-${VERSION}
+    cd ${WORKDIR}
+    git clone ${PAT_REPO}
     cd proxysql-admin-tool
+    git fetch origin
+    if [ ! -z ${PAT_TAG} ]; then
+        git checkout ${PAT_TAG}
+    fi
+    sed -i 's:2.0.12:2.0.15:' proxysql-admin
     update_pat
-    cd ..
-    cp -ap proxysql-admin-tool/* tools/
-    cp -ap proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler tools/
-    cp -ap proxysql-admin-tool/config.toml etc/
+    cd ${WORKDIR}
+    cd ${PRODUCT}-${VERSION}
+    cp -ap ${WORKDIR}/proxysql-admin-tool/* tools/
+    cp -ap ${WORKDIR}/proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler tools/
+    cp -ap ${WORKDIR}/proxysql-admin-tool/config.toml etc/
     mv tools/LICENSE .
     mv tools/proxysql-admin.cnf etc/
     sed -i "s:@@VERSION@@:${VERSION}:g" debian/changelog
