@@ -143,6 +143,7 @@ get_sources(){
     GIT_VERSION=${VERSION}-percona
     REVISION=$(git rev-parse --short HEAD)
     sed -i "s|^GIT_VERSION ?= .*|GIT_VERSION=${VERSION}-percona|" Makefile
+    sed -i '0,/^endif$/s/^endif$/endif\nexport GIT_VERSION := $(GIT_VERSION)/' Makefile
     sed -i "s/export CURVER?=.*/export CURVER?=${VERSION}/g" Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' deps/Makefile
     sed -i 's:6.7:6:' deps/Makefile
@@ -595,6 +596,7 @@ build_source_deb(){
     #
     
     mv ${TARFILE} ${PRODUCT}_${VERSION}.orig.tar.gz
+    cd ${BUILDDIR}/proxysql-admin-tool
     #update_pat
     cd ..
     cd debian
