@@ -59,7 +59,7 @@ install -d  %{buildroot}/%{_sysconfdir}/logrotate.d
 install -m 0755 src/proxysql %{buildroot}/%{_bindir}
 install -m 0640 etc/proxysql.cnf %{buildroot}/%{_sysconfdir}
 install -m 0640 proxysql-admin.cnf.in %{buildroot}/%{_datarootdir}/proxysql/etc/
-install -m 0640 {_sourcedir}/config.toml %{buildroot}/%{_sysconfdir}
+install -m 0640 %{_sourcedir}/config.toml %{buildroot}/%{_sysconfdir}
 %if 0%{?systemd}
   install -m 0755 -d %{buildroot}/%{_unitdir}
   install -m 0644 systemd/system/proxysql.service %{buildroot}/%{_unitdir}/proxysql.service
