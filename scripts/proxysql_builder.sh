@@ -485,21 +485,7 @@ build_srpm(){
     tar vxzf ${WORKDIR}/${TARFILE} --wildcards '*/rpm' --strip=1
     #
     cp -av rpm/* rpmbuild/SOURCES
-    #cd ${WORKDIR}/${PRODUCT_FULL}/proxysql-admin-tool
-    #update_pat
-    cd $WORKDIR
-    cd rpmbuild/SOURCES
-    
-   # wget --no-check-certificate https://download.osgeo.org/postgis/docs/postgis-3.3.1.pdf
-    #wget --no-check-certificate https://www.postgresql.org/files/documentation/pdf/12/postgresql-12-A4.pdf
-    cd ../../
     cp -av rpmbuild/SOURCES/proxysql.spec rpmbuild/SPECS
-#    cd ${WORKDIR}/rpmbuild/SPECS
-#    cp -ap ${WORKDIR}/proxysql-packaging/rpm/*.spec .
-#    cp -ap ${WORKDIR}/proxysql-admin-tool/* rpmbuild/SOURCES/
-#    cp -ap ${WORKDIR}/proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler rpmbuild/SOURCES/
-#    cp -ap ${WORKDIR}/proxysql-admin-tool/config.toml rpmbuild/SOURCES/
-    cd ${WORKDIR}
     #
     mv -fv ${TARFILE} ${WORKDIR}/rpmbuild/SOURCES
    # if [ -f /opt/rh/devtoolset-7/enable ]; then
@@ -549,10 +535,6 @@ build_rpm(){
     mkdir -vp rpmbuild/{SOURCES,SPECS,BUILD,SRPMS,RPMS}
     cp $SRC_RPM rpmbuild/SRPMS/
 
-    cd rpmbuild/SRPMS/
-    #
-    cd $WORKDIR
-    ls ${WORKDIR}
     git clone ${PAT_REPO}
     cd proxysql-admin-tool
     git fetch origin
@@ -565,7 +547,6 @@ build_rpm(){
     cp -ap ${WORKDIR}/proxysql-admin-tool/* rpmbuild/SOURCES/
     cp -ap ${WORKDIR}/proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler rpmbuild/SOURCES/
     cp -ap ${WORKDIR}/proxysql-admin-tool/config.toml rpmbuild/SOURCES/
-    cd $WORKDIR
 
     RHEL=$(rpm --eval %rhel)
     ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
@@ -605,11 +586,7 @@ build_source_deb(){
     #
     
     mv ${TARFILE} ${PRODUCT}_${VERSION}.orig.tar.gz
-    cd ${BUILDDIR}/proxysql-admin-tool
-    #update_pat
-    cd ..
-    cd debian
-    #rm -rf changelog
+    cd ${BUILDDIR}/debian
     sed -i "s:@@VERSION@@:${VERSION}:g" changelog
     sed -i "s:@@VERSION@@:${VERSION}:g" control
  
@@ -720,9 +697,7 @@ build_deb(){
     #
     dpkg-source -x ${DSC}
     #
-    #cd ${PRODUCT}-${VERSION}
 
-    cd ${WORKDIR}
     git clone ${PAT_REPO}
     cd proxysql-admin-tool
     git fetch origin
