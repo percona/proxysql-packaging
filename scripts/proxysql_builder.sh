@@ -180,6 +180,11 @@ get_system(){
         ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
         OS_NAME="el$RHEL"
         OS="rpm"
+    elif [ -f /etc/amazon-linux-release ]; then
+        RHEL=$(rpm --eval %amzn)
+        ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
+        OS_NAME="amzn$RHEL"
+        OS="rpm"
     else
         ARCH=$(uname -m)
         OS_NAME="$(lsb_release -sc)"
@@ -237,7 +242,6 @@ install_deps() {
         exit 1
     fi
     CURPLACE=$(pwd)
-    RHEL=$(rpm --eval %rhel)
     ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
     if [ "x$OS" = "xrpm" ]; then
       if [ "x${RHEL}" = "x7" -o "x${RHEL}" = "x8" ]; then
@@ -252,8 +256,10 @@ install_deps() {
       yum clean all
       if [ "x${RHEL}" = "x10" ]; then
           yum -y install curl oracle-epel-release-el10
-      else
+      elif [ "x${RHEL}" != "x2023" ]; then
           yum -y install curl epel-release
+      else
+          yum -y install curl
       fi
       if [ "x${RHEL}" = "x7" -o "x${RHEL}" = "x8" ]; then
             switch_to_vault_repo
@@ -334,6 +340,13 @@ install_deps() {
           yum -y install python3 gnutls-devel libtool || true
           ln -s /usr/bin/python3.9 /usr/bin/python || true
           yum-config-manager --enable ol10_codeready_builder
+          yum -y install libcurl-devel libunwind libunwind-devel zlib-devel
+          yum -y install libicu-devel libevent-devel
+          yum -y install patchelf
+      fi
+      if [ $RHEL = 2023 ]; then
+          yum -y install python3 gnutls-devel libtool || true
+          ln -s /usr/bin/python3.9 /usr/bin/python || true
           yum -y install libcurl-devel libunwind libunwind-devel zlib-devel
           yum -y install libicu-devel libevent-devel
           yum -y install patchelf
@@ -548,10 +561,9 @@ build_rpm(){
     cp -ap ${WORKDIR}/proxysql-admin-tool/percona-scheduler/pxc_scheduler_handler rpmbuild/SOURCES/
     cp -ap ${WORKDIR}/proxysql-admin-tool/config.toml rpmbuild/SOURCES/
 
-    RHEL=$(rpm --eval %rhel)
     ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
     [ -f /opt/percona-devtoolset/enable ] && source /opt/percona-devtoolset/enable
-    rpmbuild --define "_topdir ${WORKDIR}/rpmbuild" --define "dist .el${RHEL}" --rebuild rpmbuild/SRPMS/${SRC_RPM} 
+    rpmbuild --define "_topdir ${WORKDIR}/rpmbuild" --define "dist .${OS_NAME}" --rebuild rpmbuild/SRPMS/${SRC_RPM} 
 
     return_code=$?
     if [ $return_code != 0 ]; then
