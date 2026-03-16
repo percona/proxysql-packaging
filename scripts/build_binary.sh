@@ -69,8 +69,12 @@ else
     exit 1
 
 fi
-SOURCEDIR="$(cd $(dirname "$0"); cd ../../; pwd)"
-VERSION="$(grep CURVER $SOURCEDIR/Makefile | awk -F'=' '{print $2}' | tr -d ' ')"
+
+SOURCEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" && pwd)"
+if ! VERSION=$(bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/extract_curver.sh" "$SOURCEDIR"); then
+  echo "extract_curver.sh failed, falling back to Makefile parsing..." >&2
+  VERSION="$(grep CURVER "$SOURCEDIR/Makefile" | awk -F'=' '{print $2}' | tr -d ' ')"
+fi
 
 # Compilation flags
 export CC=${CC:-gcc}
