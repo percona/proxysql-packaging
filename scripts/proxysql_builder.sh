@@ -143,6 +143,8 @@ get_sources(){
     GIT_VERSION=${VERSION}-percona
     REVISION=$(git rev-parse --short HEAD)
     sed -i "s|^GIT_VERSION ?= .*|GIT_VERSION=${VERSION}-percona|" Makefile
+    sed -i "s/GIT_VERSION_BASE := .*/GIT_VERSION_BASE := ${GIT_VERSION}/" Makefile
+    sed -i "0,/^endif$/s/^endif$/endif\nexport GIT_VERSION := ${GIT_VERSION}/" Makefile
     sed -i "s/export CURVER?=.*/export CURVER?=${VERSION}/g" Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' deps/Makefile
     sed -i 's:6.7:6:' deps/Makefile
@@ -196,21 +198,21 @@ get_system(){
 install_go() {
     export PATH=$PATH:/usr/bin/go/bin
     if [ x"$ARCH" = "xx86_64" ]; then
-        until wget https://go.dev/dl/go1.23.12.linux-amd64.tar.gz; do
+        until wget https://go.dev/dl/go1.25.8.linux-amd64.tar.gz; do
             echo "Service not ready, retrying in 10 seconds..."
             sleep 10
         done
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.23.12.linux-amd64.tar.gz
+        tar -C /usr/bin -xzf go1.25.8.linux-amd64.tar.gz
         #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
         #update-alternatives --set go /usr/local/go/bin/go
     else
-        until wget https://go.dev/dl/go1.23.12.linux-arm64.tar.gz; do
+        until wget https://go.dev/dl/go1.25.8.linux-arm64.tar.gz; do
             echo "Service not ready, retrying in 10 seconds..."
             sleep 10
         done
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.23.12.linux-arm64.tar.gz
+        tar -C /usr/bin -xzf go1.25.8.linux-arm64.tar.gz
         #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
         #update-alternatives --set go /usr/local/go/bin/go
     fi
@@ -222,6 +224,7 @@ install_go() {
 
 update_pat() {
     git submodule update --init
+    export PATH=$PATH:/usr/bin/go/bin
     which go
     sed -i 's|command -v go|command -v bash|g' build_scheduler.sh
     sed -i 's|go build|/usr/bin/go/bin/go build|g' build_scheduler.sh
@@ -303,7 +306,7 @@ install_deps() {
      #   fi
       fi
      # yum -y install docbook-xsl libxslt-devel
-      INSTALL_LIST="git wget rpm-build gcc perl automake bzip2 cmake make gcc-c++ gcc git openssl openssl-devel gnutls gnutls-devel libtool patch python3 perl-IPC-Cmd libuuid-devel"
+      INSTALL_LIST="git wget rpm-build gcc perl automake bzip2 cmake make gcc-c++ gcc git openssl openssl-devel gnutls gnutls-devel libtool patch python3 perl-IPC-Cmd libuuid-devel bison"
       yum -y install ${INSTALL_LIST}
       install_go
       #update_pat
@@ -634,10 +637,6 @@ build_tarball(){
     source proxysql.properties
     get_tar "source_tarball"
     TARBALL=$(find . -type f -name 'proxysql*.tar.gz')
-    #VERSION_TMP=$(echo ${TARBALL}| awk -F '-' '{print $2}')
-   # echo $VERSION_TMP
-   # VERSION=${VERSION_TMP%.tar.gz}
-   # DIRNAME=${NAME}-${VERSION}
     tar xzf ${TARBALL}
     cd ${WORKDIR}
     git clone ${GIT_REPO}
@@ -645,10 +644,7 @@ build_tarball(){
     git checkout ${GIT_BRANCH}
     cd $WORKDIR
     gcc --version
-    sed -i 's/$SOURCEDIR\/Makefile/$SOURCEDIR\/proxysql3-${PROXYSQL_VERSION}\/Makefile/' ./proxysql-packaging/scripts/build_binary.sh
-    sed -i 's/cd $SOURCEDIR/cd $SOURCEDIR\/proxysql3-${PROXYSQL_VERSION}/' ./proxysql-packaging/scripts/build_binary.sh
-    sed -i '73i source $SOURCEDIR/proxysql.properties' ./proxysql-packaging/scripts/build_binary.sh
-    sed -i '248i cp proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz $SOURCEDIR' ./proxysql-packaging/scripts/build_binary.sh
+    sed -i "s/@@CURVER@@/${VERSION}/g" ./proxysql-packaging/scripts/build_binary.sh
     sed -i 's/s|go build|${BINGO} build|g/s|go build|\/usr\/bin\/go\/bin\/go build|g/' ./proxysql-packaging/scripts/build_binary.sh
     sed -i 's/s|go mod|${BINGO} mod|g/s|go mod|\/usr\/bin\/go\/bin\/go mod|g/' ./proxysql-packaging/scripts/build_binary.sh
     sed -i 's/sudo bash/bash/' ./proxysql-packaging/scripts/build_binary.sh

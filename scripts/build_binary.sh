@@ -71,9 +71,11 @@ else
 fi
 
 SOURCEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" && pwd)"
-if ! VERSION=$(bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/extract_curver.sh" "$SOURCEDIR"); then
+source $SOURCEDIR/proxysql.properties
+
+if ! VERSION=$(bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/extract_curver.sh" "$SOURCEDIR"/proxysql3-@@CURVER@@); then
   echo "extract_curver.sh failed, falling back to Makefile parsing..." >&2
-  VERSION="$(grep CURVER "$SOURCEDIR/Makefile" | awk -F'=' '{print $2}' | tr -d ' ')"
+  VERSION="@@CURVER@@"
 fi
 
 # Compilation flags
@@ -97,7 +99,7 @@ mkdir "$INSTALLDIR"
 
     # Build proper
     (
-        cd $SOURCEDIR
+        cd "$SOURCEDIR"/proxysql3-@@CURVER@@
 
         # Install the files
         make clean
@@ -246,6 +248,7 @@ mkdir "$INSTALLDIR"
         ls -la
 
         $TAR czf "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz" --owner=0 --group=0 -C "$INSTALLDIR/../" "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER"
+        cp "proxysql-$VERSION-$(uname -s)-$(uname -m)$GLIBC_VER.tar.gz" "$SOURCEDIR"
     fi
 
     # Clean up build dir
