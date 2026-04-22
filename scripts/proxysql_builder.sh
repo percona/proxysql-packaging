@@ -198,21 +198,21 @@ get_system(){
 install_go() {
     export PATH=$PATH:/usr/bin/go/bin
     if [ x"$ARCH" = "xx86_64" ]; then
-        until wget https://go.dev/dl/go1.25.8.linux-amd64.tar.gz; do
+        until wget https://go.dev/dl/go1.26.2.linux-amd64.tar.gz; do
             echo "Service not ready, retrying in 10 seconds..."
             sleep 10
         done
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.25.8.linux-amd64.tar.gz
+        tar -C /usr/bin -xzf go1.26.2.linux-amd64.tar.gz
         #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
         #update-alternatives --set go /usr/local/go/bin/go
     else
-        until wget https://go.dev/dl/go1.25.8.linux-arm64.tar.gz; do
+        until wget https://go.dev/dl/go1.26.2.linux-arm64.tar.gz; do
             echo "Service not ready, retrying in 10 seconds..."
             sleep 10
         done
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.25.8.linux-arm64.tar.gz
+        tar -C /usr/bin -xzf go1.26.2.linux-arm64.tar.gz
         #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
         #update-alternatives --set go /usr/local/go/bin/go
     fi
