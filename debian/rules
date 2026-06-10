@@ -13,7 +13,7 @@
 	dh $@
 
 export DH_VERBOSE=1
-export CFLAGS=-fpic
+export CFLAGS=-fpic -std=gnu17
 export CXXFLAGS=-fpic
 
 TMP=$(CURDIR)/debian/tmp/
