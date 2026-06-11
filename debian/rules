@@ -41,6 +41,7 @@ proxysqldir = proxysql
 
 override_dh_builddeb:
 	dh_builddeb -- -Zgzip
+	@ls ../*.deb 2>/dev/null | grep -q . || { echo "ERROR: No .deb packages were built" >&2; exit 1; }
 
 override_dh_auto_configure:
 	@echo "RULES.$@"
