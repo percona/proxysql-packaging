@@ -146,7 +146,10 @@ get_sources(){
     sed -i '0,/^endif$/s/^endif$/endif\nexport GIT_VERSION := $(GIT_VERSION)/' Makefile
     sed -i "s/export CURVER?=.*/export CURVER?=${VERSION}/g" Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' deps/Makefile
-    sed -i -e 's@cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$$@cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5@' deps/Makefile
+    # CMake 4.x (Ubuntu 26.04+) dropped support for cmake_minimum_required < 3.5
+    sed -i 's/cmake \. -Wno-dev/cmake . -Wno-dev -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' deps/Makefile
+    sed -i 's/cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$/cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5/' deps/Makefile
+    grep CMAKE_POLICY_VERSION_MINIMUM deps/Makefile
     sed -i 's:6.7:6:' deps/Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' src/Makefile
     sed -i 's:6.7:6:' src/Makefile
@@ -746,11 +749,13 @@ build_deb(){
     #fi
     # CMake 4.x (Ubuntu 26.04+) dropped support for cmake_minimum_required < 3.5
     sed -i 's/cmake \. -Wno-dev/cmake . -Wno-dev -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' deps/Makefile
+    sed -i 's/cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$/cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5/' deps/Makefile
     dpkg-buildpackage -rfakeroot -us -uc -b
     mkdir -p $CURDIR/deb
     mkdir -p $WORKDIR/deb
     cp $WORKDIR/*.*deb $WORKDIR/deb
     cp $WORKDIR/*.*deb $CURDIR/deb
+    ls $CURDIR/deb/*.deb 2>/dev/null | grep -q . || { echo "ERROR: No .deb packages were built"; exit 1; }
 }
 #main
 export GIT_SSL_NO_VERIFY=1
