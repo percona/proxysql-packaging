@@ -99,6 +99,7 @@ mkdir "$INSTALLDIR"
         make clean
         mkdir -p "$INSTALLDIR"
         sed -i -e 's@^\(\s\+cd curl/curl \&\& ./configure .*\) \(--with-ssl=.*\)$@\1 --without-zstd \2@' deps/Makefile
+        sed -i -e 's@cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$@cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5@' deps/Makefile
         make -j 4 build_deps
         make -j 4
         mkdir -p $INSTALLDIR/usr/bin
