@@ -743,6 +743,8 @@ build_deb(){
     #	sed -i 's:8:10:' debian/compat
     #    sed -i 's:, dh-systemd::' debian/control
     #fi
+    # CMake 4.x (Ubuntu 26.04+) dropped support for cmake_minimum_required < 3.5
+    sed -i 's/cmake \. -Wno-dev/cmake . -Wno-dev -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' deps/Makefile
     dpkg-buildpackage -rfakeroot -us -uc -b
     mkdir -p $CURDIR/deb
     mkdir -p $WORKDIR/deb
