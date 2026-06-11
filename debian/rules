@@ -45,8 +45,9 @@ override_dh_builddeb:
 override_dh_auto_configure:
 	@echo "RULES.$@"
 
+	make clean
 	sed -i -e 's@cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$$@cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5@' deps/Makefile
-	make clean && make
+	make
 	touch $@
 
 override_dh_auto_build:

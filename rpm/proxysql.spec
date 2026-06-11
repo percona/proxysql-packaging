@@ -46,6 +46,7 @@ export CFLAGS="$CFLAGS -fPIC"
 export CXXFLAGS="$CXXFLAGS -fPIC"
 sed -i -e 's/c++11/c++0x/' lib/Makefile
 sed -i -e 's/c++11/c++0x/' src/Makefile
+sed -i -e 's@cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$@cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5@' deps/Makefile
 make clean
 make
 mv proxysql-admin-tool/proxysql-admin.cnf proxysql-admin.cnf.in
