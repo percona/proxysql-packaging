@@ -150,6 +150,7 @@ get_sources(){
     sed -i 's/cmake \. -Wno-dev/cmake . -Wno-dev -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' deps/Makefile
     sed -i 's/cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$/cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5/' deps/Makefile
     grep CMAKE_POLICY_VERSION_MINIMUM deps/Makefile
+    sed -i '/#include <limits>/a #include <cstdint>' include/btree.h
     sed -i 's:6.7:6:' deps/Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' src/Makefile
     sed -i 's:6.7:6:' src/Makefile
@@ -751,6 +752,7 @@ build_deb(){
     sed -i 's/cmake \. -Wno-dev/cmake . -Wno-dev -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' deps/Makefile
     sed -i 's/cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$/cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5/' deps/Makefile
     sed -i 's/cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \.$/cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ./' deps/Makefile
+    sed -i '/#include <limits>/a #include <cstdint>' include/btree.h
     dpkg-buildpackage -rfakeroot -us -uc -b
     mkdir -p $CURDIR/deb
     mkdir -p $WORKDIR/deb
