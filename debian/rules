@@ -13,7 +13,7 @@
 	dh $@
 
 export DH_VERBOSE=1
-export CFLAGS=-fpic
+export CFLAGS=-fpic -std=gnu17
 export CXXFLAGS=-fpic
 
 TMP=$(CURDIR)/debian/tmp/
@@ -45,8 +45,9 @@ override_dh_builddeb:
 override_dh_auto_configure:
 	@echo "RULES.$@"
 
-	make clean && make
-	touch $@ 
+	make clean
+	make
+	touch $@
 
 override_dh_auto_build:
 	@echo "RULES.$@"

@@ -146,6 +146,11 @@ get_sources(){
     sed -i '0,/^endif$/s/^endif$/endif\nexport GIT_VERSION := $(GIT_VERSION)/' Makefile
     sed -i "s/export CURVER?=.*/export CURVER?=${VERSION}/g" Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' deps/Makefile
+    # CMake 4.x (Ubuntu 26.04+) dropped support for cmake_minimum_required < 3.5
+    sed -i 's/cmake \. -Wno-dev/cmake . -Wno-dev -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' deps/Makefile
+    sed -i 's/cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$/cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5/' deps/Makefile
+    grep CMAKE_POLICY_VERSION_MINIMUM deps/Makefile
+    sed -i '/#include <limits>/a #include <cstdint>' include/btree.h
     sed -i 's:6.7:6:' deps/Makefile
     sed -i 's/shell cat.*/shell rpm --eval \%rhel)/' src/Makefile
     sed -i 's:6.7:6:' src/Makefile
@@ -725,7 +730,7 @@ build_deb(){
         sed -i "s:amd64:arm64:g" debian/control.systemd
         cat debian/control
     fi
-    if [ $DEBIAN_VERSION = "bionic" -o $DEBIAN_VERSION = "jessie" -o $DEBIAN_VERSION = "focal" -o $DEBIAN_VERSION = "jammy" -o $DEBIAN_VERSION = "buster" -o $DEBIAN_VERSION = "stretch" -o $DEBIAN_VERSION = "artful" -o $DEBIAN_VERSION = "bionic" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" -o ${DEBIAN_VERSION} = "trixie" ]; then
+    if [ $DEBIAN_VERSION = "bionic" -o $DEBIAN_VERSION = "jessie" -o $DEBIAN_VERSION = "focal" -o $DEBIAN_VERSION = "jammy" -o $DEBIAN_VERSION = "buster" -o $DEBIAN_VERSION = "stretch" -o $DEBIAN_VERSION = "artful" -o $DEBIAN_VERSION = "bionic" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" -o ${DEBIAN_VERSION} = "trixie" -o ${DEBIAN_VERSION} = "resolute" ]; then
         mv debian/control.systemd debian/control
         mv debian/rules.systemd debian/rules    
     elif [ $DEBIAN_VERSION = "xenial" ] && [[ $VERSION == *2* ]]; then
@@ -735,7 +740,7 @@ build_deb(){
     fi
     dch -m -D "${DEBIAN_VERSION}" --force-distribution -v "2:${VERSION}-${DEB_RELEASE}.${DEBIAN_VERSION}" 'Update distribution'
     unset $(locale|cut -d= -f1)
-    if [ ${DEBIAN_VERSION} = "focal" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" -o ${DEBIAN_VERSION} = "trixie" ]; then
+    if [ ${DEBIAN_VERSION} = "focal" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" -o ${DEBIAN_VERSION} = "trixie" -o ${DEBIAN_VERSION} = "resolute" ]; then
 	sed -i 's:8:10:' debian/compat
         sed -i 's:, dh-systemd::' debian/control
     fi
@@ -743,11 +748,17 @@ build_deb(){
     #	sed -i 's:8:10:' debian/compat
     #    sed -i 's:, dh-systemd::' debian/control
     #fi
+    # CMake 4.x (Ubuntu 26.04+) dropped support for cmake_minimum_required < 3.5
+    sed -i 's/cmake \. -Wno-dev/cmake . -Wno-dev -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' deps/Makefile
+    sed -i 's/cmake \. -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug$/cmake . -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.5/' deps/Makefile
+    sed -i 's/cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \.$/cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ./' deps/Makefile
+    sed -i '/#include <limits>/a #include <cstdint>' include/btree.h
     dpkg-buildpackage -rfakeroot -us -uc -b
     mkdir -p $CURDIR/deb
     mkdir -p $WORKDIR/deb
     cp $WORKDIR/*.*deb $WORKDIR/deb
     cp $WORKDIR/*.*deb $CURDIR/deb
+    ls $CURDIR/deb/*.deb 2>/dev/null | grep -q . || { echo "ERROR: No .deb packages were built"; exit 1; }
 }
 #main
 export GIT_SSL_NO_VERIFY=1
