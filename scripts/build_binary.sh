@@ -101,7 +101,11 @@ mkdir "$INSTALLDIR"
 
     # Build proper
     (
-        cd "$SOURCEDIR"/proxysql3-@@CURVER@@
+        if [ -d "$SOURCEDIR/proxysql3-@@CURVER@@" ]; then
+            cd "$SOURCEDIR/proxysql3-@@CURVER@@"
+        else
+            cd "$SOURCEDIR"
+        fi
 
         # Install the files
         make clean
