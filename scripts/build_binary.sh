@@ -75,9 +75,13 @@ if [ -f "$SOURCEDIR/proxysql.properties" ]; then
     source "$SOURCEDIR/proxysql.properties"
 fi
 
-if ! VERSION=$(bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/extract_curver.sh" "$SOURCEDIR"/proxysql3-@@CURVER@@); then
-  echo "extract_curver.sh failed, falling back to Makefile parsing..." >&2
-  VERSION="@@CURVER@@"
+if ! VERSION=$(bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/extract_curver.sh" "$SOURCEDIR"); then
+    if [ -f "$SOURCEDIR/proxysql.properties" ]; then
+        VERSION="@@CURVER@@"
+    else
+        echo "extract_curver.sh failed, falling back to Makefile parsing..." >&2
+        VERSION="$(grep CURVER "$SOURCEDIR/Makefile" | awk -F'=' '{print $2}' | tr -d ' ')"
+    fi
 fi
 
 # Compilation flags
@@ -101,7 +105,11 @@ mkdir "$INSTALLDIR"
 
     # Build proper
     (
-        cd "$SOURCEDIR"/proxysql3-@@CURVER@@
+        if [ -d "$SOURCEDIR/proxysql3-@@CURVER@@" ]; then
+            cd "$SOURCEDIR/proxysql3-@@CURVER@@"
+        else
+            cd "$SOURCEDIR"
+        fi
 
         # Install the files
         make clean
