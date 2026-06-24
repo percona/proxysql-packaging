@@ -71,7 +71,9 @@ else
 fi
 
 SOURCEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" && pwd)"
-source $SOURCEDIR/proxysql.properties
+if [ -f "$SOURCEDIR/proxysql.properties" ]; then
+    source "$SOURCEDIR/proxysql.properties"
+fi
 
 if ! VERSION=$(bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/extract_curver.sh" "$SOURCEDIR"/proxysql3-@@CURVER@@); then
   echo "extract_curver.sh failed, falling back to Makefile parsing..." >&2
