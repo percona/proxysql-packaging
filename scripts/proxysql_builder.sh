@@ -162,7 +162,9 @@ get_sources(){
     cp -ap ${WORKDIR}/proxysql-admin-tool/ .
     cd ${WORKDIR}
     #
-    source proxysql.properties
+    if [ -f proxysql.properties ]; then
+        source proxysql.properties
+    fi
     #
 
     tar --owner=0 --group=0 --exclude=.git -czf ${PRODUCT_FULL}.tar.gz ${PRODUCT_FULL}
@@ -634,7 +636,9 @@ build_tarball(){
     [ -f /opt/rh/devtoolset-8/enable ] && source /opt/rh/devtoolset-8/enable
     echo "PROXYSQL_VERSION=${VERSION}" > proxysql.properties
     echo "PAT_TAG=${PAT_TAG}" >> proxysql.properties
-    source proxysql.properties
+    if [ -f proxysql.properties ]; then
+        source proxysql.properties
+    fi
     get_tar "source_tarball"
     TARBALL=$(find . -type f -name 'proxysql*.tar.gz')
     tar xzf ${TARBALL}
