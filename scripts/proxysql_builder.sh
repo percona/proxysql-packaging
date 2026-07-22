@@ -202,8 +202,8 @@ install_go() {
     export PATH=$PATH:/usr/bin/go/bin
     if [ x"$ARCH" = "xx86_64" ]; then
         until wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz; do
-            echo "Service not ready, retrying in 10 seconds..."
-            sleep 10
+            echo "Service not ready, retrying in 30 seconds..."
+            sleep 30
         done
         rm -rf /usr/bin/go
         tar -C /usr/bin -xzf go${GO_VERSION}.linux-amd64.tar.gz
@@ -211,8 +211,8 @@ install_go() {
         #update-alternatives --set go /usr/local/go/bin/go
     else
         until wget https://go.dev/dl/go${GO_VERSION}.linux-arm64.tar.gz; do
-            echo "Service not ready, retrying in 10 seconds..."
-            sleep 10
+            echo "Service not ready, retrying in 30 seconds..."
+            sleep 30
         done
         rm -rf /usr/bin/go
         if [ "x${DEBIAN}" = "xresolute" ]; then
