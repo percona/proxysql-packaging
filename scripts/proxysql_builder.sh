@@ -219,7 +219,7 @@ install_go() {
             # GNU tar fails with "Function not implemented" (ENOSYS) on this
             # OS/arch combination, so fall back to bsdtar for extraction.
             which bsdtar >/dev/null 2>&1 || apt-get -y install libarchive-tools
-            bsdtar -C /usr/bin -xzf go${GO_VERSION}.linux-arm64.tar.gz
+            LANG=C.UTF-8 LC_ALL=C.UTF-8 bsdtar -C /usr/bin -xzf go${GO_VERSION}.linux-arm64.tar.gz
         else
             tar -C /usr/bin -xzf go${GO_VERSION}.linux-arm64.tar.gz
         fi
