@@ -444,11 +444,6 @@ install_deps() {
       apt-get install -y libicu-dev libevent-dev
     fi
     apt-get install -y libicu-dev libevent-dev
-    if [ "x${DEBIAN}" = "xresolute" ]; then
-        which bsdtar >/dev/null 2>&1 || apt-get -y install libarchive-tools
-        dpkg-divert --local --rename --add /usr/bin/tar
-        ln -s /usr/bin/bsdtar /usr/bin/tar
-    fi
     return;
 }
 
@@ -706,15 +701,7 @@ build_deb(){
     export DEBIAN_VERSION=$(lsb_release -sc)
     export DEBIAN=$(lsb_release -sc)
     export ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
-    if [ "x${DEBIAN}" = "xresolute" ] && [ "x${ARCH}" = "xaarch64" -o "x${ARCH}" = "xarm64" ]; then
-        apt-get -y upgrade tar
-        # GNU tar fails with "Function not implemented" (ENOSYS) on this
-        # OS/arch combination, so fall back to bsdtar for extraction.
-        which bsdtar >/dev/null 2>&1 || apt-get -y install libarchive-tools
-        LANG=C.UTF-8 LC_ALL=C.UTF-8 bsdtar -xvf ${PRODUCT}_${VERSION}.orig.tar.gz
-    else
-        tar xvf ${PRODUCT}_${VERSION}.orig.tar.gz
-    fi
+    tar xvf ${PRODUCT}_${VERSION}.orig.tar.gz
     rm -fv *.deb
     #
     export DIRNAME=$(echo ${DSC%.dsc} | sed -e 's:_:-:g')
