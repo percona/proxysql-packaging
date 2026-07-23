@@ -700,12 +700,19 @@ build_deb(){
         get_deb_sources $file
     done
     cd $WORKDIR
-    tar xvf ${PRODUCT}_${VERSION}.orig.tar.gz
-    rm -fv *.deb
-    #
     export DEBIAN_VERSION=$(lsb_release -sc)
     export DEBIAN=$(lsb_release -sc)
     export ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
+    if [ "x${DEBIAN}" = "xresolute" ] && [ "x${ARCH}" = "xaarch64" -o "x${ARCH}" = "xarm64" ]; then
+        # GNU tar fails with "Function not implemented" (ENOSYS) on this
+        # OS/arch combination, so fall back to bsdtar for extraction.
+        which bsdtar >/dev/null 2>&1 || apt-get -y install libarchive-tools
+        LANG=C.UTF-8 LC_ALL=C.UTF-8 bsdtar -xvf ${PRODUCT}_${VERSION}.orig.tar.gz
+    else
+        tar xvf ${PRODUCT}_${VERSION}.orig.tar.gz
+    fi
+    rm -fv *.deb
+    #
     export DIRNAME=$(echo ${DSC%.dsc} | sed -e 's:_:-:g')
     #export VERSION=$(echo ${DSC%.dsc} | awk -F'_' '{print $2}')
     #
