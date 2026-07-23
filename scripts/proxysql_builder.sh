@@ -219,10 +219,8 @@ install_go() {
             # GNU tar fails with "Function not implemented" (ENOSYS) on this
             # OS/arch combination, so fall back to bsdtar for extraction.
             which bsdtar >/dev/null 2>&1 || apt-get -y install libarchive-tools
-            dpkg-divert --local --rename --add /usr/bin/tar
-            ln -s /usr/bin/bsdtar /usr/bin/tar
         fi
-        tar -C /usr/bin -xzf go${GO_VERSION}.linux-arm64.tar.gz
+        bsdtar -C /usr/bin -xzf go${GO_VERSION}.linux-arm64.tar.gz
     fi
     export PATH=$PATH:/usr/bin/go/bin
     go version
@@ -444,6 +442,11 @@ install_deps() {
       apt-get install -y libicu-dev libevent-dev
     fi
     apt-get install -y libicu-dev libevent-dev
+    if [ "x${DEBIAN}" = "xresolute" ]; then
+        which bsdtar >/dev/null 2>&1 || apt-get -y install libarchive-tools
+        dpkg-divert --local --rename --add /usr/bin/tar
+        ln -s /usr/bin/bsdtar /usr/bin/tar
+    fi
     return;
 }
 
