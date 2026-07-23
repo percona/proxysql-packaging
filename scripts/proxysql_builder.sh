@@ -704,6 +704,7 @@ build_deb(){
     export DEBIAN=$(lsb_release -sc)
     export ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
     if [ "x${DEBIAN}" = "xresolute" ] && [ "x${ARCH}" = "xaarch64" -o "x${ARCH}" = "xarm64" ]; then
+        apt-get -y upgrade tar
         # GNU tar fails with "Function not implemented" (ENOSYS) on this
         # OS/arch combination, so fall back to bsdtar for extraction.
         which bsdtar >/dev/null 2>&1 || apt-get -y install libarchive-tools
