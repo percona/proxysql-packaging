@@ -198,25 +198,24 @@ get_system(){
 }
 
 install_go() {
+    GO_VERSION="1.26.5"
     export PATH=$PATH:/usr/bin/go/bin
     if [ x"$ARCH" = "xx86_64" ]; then
-        until wget https://go.dev/dl/go1.26.2.linux-amd64.tar.gz; do
-            echo "Service not ready, retrying in 10 seconds..."
-            sleep 10
+        until wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz; do
+            echo "Service not ready, retrying in 30 seconds..."
+            sleep 30
         done
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.26.2.linux-amd64.tar.gz
+        tar -C /usr/bin -xzf go${GO_VERSION}.linux-amd64.tar.gz
         #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
         #update-alternatives --set go /usr/local/go/bin/go
     else
-        until wget https://go.dev/dl/go1.26.2.linux-arm64.tar.gz; do
-            echo "Service not ready, retrying in 10 seconds..."
-            sleep 10
+        until wget https://go.dev/dl/go${GO_VERSION}.linux-arm64.tar.gz; do
+            echo "Service not ready, retrying in 30 seconds..."
+            sleep 30
         done
         rm -rf /usr/bin/go
-        tar -C /usr/bin -xzf go1.26.2.linux-arm64.tar.gz
-        #update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 1
-        #update-alternatives --set go /usr/local/go/bin/go
+        tar -C /usr/bin -xzf go${GO_VERSION}.linux-arm64.tar.gz
     fi
     export PATH=$PATH:/usr/bin/go/bin
     go version
@@ -687,17 +686,17 @@ build_deb(){
         echo "It is not possible to build source deb here"
         exit 1
     fi
-    for file in 'dsc' 'orig.tar.gz' 'changes'
+    for file in 'dsc' 'orig.tar.gz' 'tar.xz' 'changes'
     do
         get_deb_sources $file
     done
     cd $WORKDIR
-    tar xvf ${PRODUCT}_${VERSION}.orig.tar.gz
-    rm -fv *.deb
-    #
     export DEBIAN_VERSION=$(lsb_release -sc)
     export DEBIAN=$(lsb_release -sc)
     export ARCH=$(echo $(uname -m) | sed -e 's:i686:i386:g')
+    tar xvf ${PRODUCT}_${VERSION}.orig.tar.gz
+    rm -fv *.deb
+    #
     export DIRNAME=$(echo ${DSC%.dsc} | sed -e 's:_:-:g')
     #export VERSION=$(echo ${DSC%.dsc} | awk -F'_' '{print $2}')
     #
@@ -733,29 +732,23 @@ build_deb(){
         sed -i "s:amd64:arm64:g" debian/control.systemd
         cat debian/control
     fi
-    if [ $DEBIAN_VERSION = "bionic" -o $DEBIAN_VERSION = "jessie" -o $DEBIAN_VERSION = "focal" -o $DEBIAN_VERSION = "jammy" -o $DEBIAN_VERSION = "buster" -o $DEBIAN_VERSION = "stretch" -o $DEBIAN_VERSION = "artful" -o $DEBIAN_VERSION = "bionic" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble"  -o ${DEBIAN_VERSION} = "trixie" ]; then
-        mv debian/control.systemd debian/control
-        mv debian/rules.systemd debian/rules    
-    elif [ $DEBIAN_VERSION = "xenial" ] && [[ $VERSION == *2* ]]; then
-        curl https://jenkins.percona.com/downloads/PSQLADM-268/openssl -o tools/openssl
-        mv debian/install.xenial debian/install
-        mv debian/rules.xenial debian/rules
-    fi
+    mv debian/control.systemd debian/control
+    mv debian/rules.systemd debian/rules
     dch -m -D "${DEBIAN_VERSION}" --force-distribution -v "2:${VERSION}-${DEB_RELEASE}.${DEBIAN_VERSION}" 'Update distribution'
     unset $(locale|cut -d= -f1)
-    if [ ${DEBIAN_VERSION} = "focal" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" -o ${DEBIAN_VERSION} = "trixie" ]; then
+    if [ ${DEBIAN_VERSION} = "resolute" -o ${DEBIAN_VERSION} = "jammy" -o ${DEBIAN_VERSION} = "bullseye" -o ${DEBIAN_VERSION} = "bookworm" -o ${DEBIAN_VERSION} = "noble" -o ${DEBIAN_VERSION} = "trixie" ]; then
 	sed -i 's:8:10:' debian/compat
         sed -i 's:, dh-systemd::' debian/control
     fi
-    #if [ ${DEBIAN_VERSION} = "jammy" ]; then
-    #	sed -i 's:8:10:' debian/compat
-    #    sed -i 's:, dh-systemd::' debian/control
-    #fi
     dpkg-buildpackage -rfakeroot -us -uc -b
     mkdir -p $CURDIR/deb
     mkdir -p $WORKDIR/deb
     cp $WORKDIR/*.*deb $WORKDIR/deb
     cp $WORKDIR/*.*deb $CURDIR/deb
+    if [ -z "$(ls -A $CURDIR/deb/*.deb 2>/dev/null)" ]; then
+        echo "ERROR: no deb packages were built"
+        exit 1
+    fi
 }
 #main
 export GIT_SSL_NO_VERIFY=1
